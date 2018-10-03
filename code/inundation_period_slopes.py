@@ -1,4 +1,6 @@
-from prelim_funcs import *
+
+from definitions import *
+cwd = os.getcwd()
 
 def plot_basic(X,Y,deviations_predictor=None,dev_fit_type=btf.func_exp,
     fit_type=btf.func_linear,num_of_outliers=30):

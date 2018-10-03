@@ -10,18 +10,12 @@ regr = sklearn.linear_model.LinearRegression()
 from scipy.optimize import curve_fit
 import operator
 
-#from unpack_and_split_data import extract_xl_BLF, yr_unwrap, split_years_unwrap, consider_lag
-
 #-------------------------------------------------------------------------
 #MODEL FUNCTIONS:
 def avg_of_funcs(x,funcs):
     return sum([fun(x) for fun in funcs])/len(funcs)
 
 #exponential and logistic
-#def func_exp(x,a,b,c):
-    #return a * np.exp(b * x) + c
-#def func_logistic(x,c,a,b,d):
-    #return c/(1+a*np.exp(b*x)) + d
 def func_exp(x,a,b):
     return a * np.exp(b * x) 
 def func_logistic(x,c,a,b,d):
@@ -66,13 +60,11 @@ def pre_plot(tupl,fit_type='poly'):#,y_axis=None):
         for i in range(2, len(tupl)):
             strg += ' %5.3fx^'+str(i)
         return strg % tuple(tupl)
+    #elif fit_type=='linear'
     elif fit_type==func_exp:
         return 'f(x) = %5.3fexp(%5.3fx)' % tuple(tupl)
     elif fit_type==func_logistic:
         return ' %5.3f/{1 + %5.3fexp(-%5.3fx)}+%5.3f' % tuple(tupl)
-        
-# Create linear regression object
-#regr = sklearn.linear_model.LinearRegression()
 
 def fit_2sets(X_series,Y_series, fit_func=func_linear, mask=None):
             
@@ -90,28 +82,22 @@ def fit_2sets(X_series,Y_series, fit_func=func_linear, mask=None):
     dic1.update({'print function':labe})
     return dic1
 
-def lin_fit(X_series,Y_series, fit_func=func_linear, mask=None):
+def lin_fit(X_series,Y_series, mask=None,type_return='slope'):
     X,Y = X_series, Y_series
     if type(mask)!=type(None):
         Xm = np.ma.masked_array(X,mask=mask)
         Ym = np.ma.masked_array(Y,mask=mask)
         X,Y = Xm.compressed(), Ym.compressed()
     slope, intercept, rvalue, pvalue, stderr = linregress(X,Y)
-    return slope
-            
-    #X,Y = X_series, Y_series
-    #if type(mask)!=type(None):
-        #Xm = np.ma.masked_array(X,mask=mask)
-        #Ym = np.ma.masked_array(Y,mask=mask)
-        #X,Y = Xm.compressed(), Ym.compressed()
-    #popt, pcov = curve_fit(fit_func, X, Y)#,sigma=sigma)
-    #def newf(x): return fit_func(x,*popt)
-    #labe = pre_plot(tuple(popt),model_type(fit_func))
-    #dic1={}
-    #dic1.update({'function':newf})
-    #dic1.update({'parameters':popt})
-    #dic1.update({'print function':labe})
-    #return dic1
+    if type_return=='slope':
+        return slope
+    elif type_return=='function':
+        def newf(x): return intercept+slope*x
+        return newf
+    elif type_return=='function and print':
+        def newf(x): return intercept+slope*x
+        printf = pre_plot(tuple([intercept,slope]))
+        return newf, printf
 
 def array_span(Xob, function,dense=0,specify_points=0):
     if dense==0 and specify_points==0:

@@ -1,38 +1,11 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import sys    
-import os
-import xlwt
-import xlrd
-import pandas as pd
-from xlrd.sheet import ctype_text 
-import pickle
-import sklearn.linear_model
-regr = sklearn.linear_model.LinearRegression()
-from scipy.optimize import curve_fit, fsolve
-import operator
-import scipy.stats
-#from scipy.stats import norm
-from numpy import linspace
-from pylab import plot,show,hist,figure,title
-import matplotlib
-import matplotlib.cm as cm
-import math
-from scipy.signal import argrelextrema, savgol_filter
-
-import sys
-sys.path.insert(0, '/home/rachellonchar/Dropbox/python_work/00py_projects/peatland_project/marcell_data/py_code')
-sys.path.insert(0, '/home/rachellonchar/Dropbox/python_work/00py_projects/peatland_project/marcell_data/py_code/obj')
-parent_fold = '/home/rachellonchar/Dropbox/python_work/00py_projects/peatland_project/marcell_data/py_code/obj/'
+#regular code directory setup:
+import sys, os, os.path
 cwd = os.getcwd()
-def load():
-    params = load_obj('new_parameters',parent_fold)
-    names = load_obj('new_naming',parent_fold)
-    return params, names
-from helpful_functions import extract_xl, urlify,save_obj,load_obj,pic_namer
-import fitting_funcs as ftf
-#-----------------------------------------------------------------------
-variables,naming = load()
+sys.path.insert(0, cwd+'/prelims')
+from save_funcs import *
+import basic_fitting_funcs as ftf
+##-----------------------------------------------------------------------
+variables,naming = load_obj('new_parameters'),load_obj('new_naming')
 all_years = naming['years']
 from analysis_funcs_newdat import dict_call
 def updater(*params,normalized_to_all_years='no',stats='no'):
@@ -293,9 +266,9 @@ def fitter(param,split_by_param='NTs10',years=all_years,x_axis='DoY',split_x_axi
         pnam = pic_namer(pic_name, pic_folder_name)
         plt.savefig(pnam, bbox_inches='tight')
     
-#fitter('NCH4',x_axis='NWT',split_by_param='NTs10',marker_set=0,years=all_years,
-    #subs='no',id_by='val',extrema_tolerance=10,
-    #smooth_window=[19,5],save_or_show='save')
+fitter('NCH4',x_axis='NWT',split_by_param='NTs10',marker_set=0,years=all_years,
+    subs='no',id_by='val',extrema_tolerance=10,
+    smooth_window=[19,5],save_or_show='show')
 
 
 #splitter('NTs10')
