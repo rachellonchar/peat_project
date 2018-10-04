@@ -104,14 +104,14 @@ def plot_inundation_periods(X,Y,deviations_predictor=None,dev_fit_type=btf.func_
     #plt.plot(outs,slps)
     ##plt.show()
 
-def demoo(Xvar='CH4_S1',Yvar='WT',color='NTs10',col_map='coolwarm',threshold=7,deviations_predictor='NTs10',dev_fit_type=btf.func_exp):
+def demoo(Xvar='WT',Yvar='CH4_S1',color='Ts10',col_map='coolwarm',threshold=7,deviations_predictor='NTs10',dev_fit_type=btf.func_exp):
     
-    cols,rows = 1,2
-    fig, ax = plt.subplots(ncols=cols,nrows=rows,  sharex=True, sharey=True, figsize=(18,9))
+    #cols,rows = 1,2
+    #fig, ax = plt.subplots(ncols=cols,nrows=rows,  sharex=True, sharey=True, figsize=(18,9))
     
-    #just show WT time series, colored with temp and print a straight line for threshold 
-    plt.subplot(cols,rows,1)
-    mask = notation_fix(['mask','mask inundated events',threshold])
+    ##just show WT time series, colored with temp and print a straight line for threshold 
+    #plt.subplot(cols,rows,1)
+    mask = notation_fix(['mask','mask aerated events',threshold])
     #PoI = notation_fix(['period of aeration',threshold])
     if type(deviations_predictor) != type(None):
         Y = deviations_from_fit(deviations_predictor, Yvar, fit_type=dev_fit_type,mask=None)
@@ -124,35 +124,68 @@ def demoo(Xvar='CH4_S1',Yvar='WT',color='NTs10',col_map='coolwarm',threshold=7,d
     norm = matplotlib.colors.Normalize(vmin=minD, vmax=maxD, clip=True)
     mapper = cm.ScalarMappable(norm=norm, cmap=plt.cm.get_cmap(col_map))
     bill = [mapper.to_rgba(val) for val in notation_fix(color)]
-    plt.plot(notation_fix('TotDays'),notation_fix('WT'))
-    plt.scatter(notation_fix('TotDays'),notation_fix('WT'),s=30, c=bill,cmap=mapper,
-        edgecolor=bill,vmin=minD,vmax=maxD)
-    plt.hlines(threshold,0,notation_fix('TotDays')[-1])
+    #plt.plot(notation_fix('TotDays'),notation_fix('WT'))
+    #plt.scatter(notation_fix('TotDays'),notation_fix('WT'),s=30, c=bill,cmap=mapper,
+        #edgecolor=bill,vmin=minD,vmax=maxD)
+    #plt.hlines(threshold,0,notation_fix('TotDays')[-1])
     
-    plt.subplot(cols,rows,2)
+    #plt.subplot(cols,rows,2)
     holdX,holdY = [],[]
-    all_holdsX,all_holdsY = [],[]
+    all_holdsX,all_holdsY,timest = [],[],[]
     color_sets,setC = [],[]
+    timer = []
+    Doy = notation_fix('TotDays')
     for idx in range(0,len(mask)):
         if mask[idx]==True:
             if len(holdX)!=0:
                 all_holdsX.append(holdX)
                 all_holdsY.append(holdY)
                 color_sets.append(setC)
-                holdX,holdY,setC = [],[],[]
+                timer.append(timest)
+                holdX,holdY,setC,timest = [],[],[],[]
         else:
             holdX.append(X[idx])
             holdY.append(Y[idx])
             setC.append(bill[idx])
+            timest.append(Doy[idx])
     slopes, periods = [],[]
     color_starts, color_ends = [],[]
     for period in range(0,len(all_holdsX)):
+        #fig, ax = plt.subplots(ncols=1,nrows=1,  sharex=True, sharey=True, figsize=(18,9))
+        #plt.subplot(1,1,1)
+        
+        #fun,funp = btf.lin_fit(all_holdsX[period],all_holdsY[period],type_return='function and print')
+        #plt.plot(all_holdsX[period],[fun(x) for x in all_holdsX[period]],label=funp)
         slop = btf.lin_fit(all_holdsX[period],all_holdsY[period])
+        #plt.plot(all_holdsX[period],all_holdsY[period],'ro')#,label=str(slop))
+        #plt.legend()
+        #if len(period
         slopes.append(slop)
         periods.append(len(all_holdsX[period]))
         #color_starts.append(color_sets[period][0])
         color_starts.append(color_sets[period][0])
         color_ends.append(color_sets[period][-1])
+    num_plots=len(periods)
+    cols = math.floor(np.sqrt(num_plots))
+    rows = math.ceil(num_plots/cols)
+    if cols<rows:
+        f1,f2=11.7,8.3
+    else:
+        f1,f2=8.3,11.7
+    fig, ax = plt.subplots(ncols=cols,nrows=rows,  sharex=True, sharey=True, figsize=(f1,f2))
+    pp=1
+    for period in range(0,len(all_holdsX)):
+        plt.subplot(cols,rows,pp)
+        fun,funp = btf.lin_fit(all_holdsX[period],all_holdsY[period],type_return='function and print')
+        #plt.plot(all_holdsX[period],[fun(x) for x in all_holdsX[period]],label=funp)
+        slop = btf.lin_fit(all_holdsX[period],all_holdsY[period])
+        #plt.plot(all_holdsX[period],all_holdsY[period],'ro')#,label=str(slop))
+        plt.plot(timer[period],all_holdsY[period],'ro')#,label=str(slop))
+        plt.title(str(slop))
+        plt.legend()
+        pp+=1
+    fig, ax = plt.subplots(ncols=1,nrows=1,  sharex=True, sharey=True, figsize=(18,9))
+    plt.subplot(1,1,1)
     plt.scatter(periods,slopes,marker='s',s=90,c=color_ends,cmap=mapper,
         edgecolor=color_ends,vmin=minD,vmax=maxD,label='end temp')
     plt.scatter(periods,slopes,marker='>',s=60,c=color_starts,cmap=mapper,
