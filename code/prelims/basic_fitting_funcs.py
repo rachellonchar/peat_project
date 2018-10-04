@@ -88,6 +88,7 @@ def lin_fit(X_series,Y_series, mask=None,type_return='slope'):
         Xm = np.ma.masked_array(X,mask=mask)
         Ym = np.ma.masked_array(Y,mask=mask)
         X,Y = Xm.compressed(), Ym.compressed()
+    #print(X,Y)
     slope, intercept, rvalue, pvalue, stderr = linregress(X,Y)
     if type_return=='slope':
         return slope

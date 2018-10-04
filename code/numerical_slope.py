@@ -266,9 +266,9 @@ def fitter(param,split_by_param='NTs10',years=all_years,x_axis='DoY',split_x_axi
         pnam = pic_namer(pic_name, pic_folder_name)
         plt.savefig(pnam, bbox_inches='tight')
     
-fitter('NCH4',x_axis='NWT',split_by_param='NTs10',marker_set=0,years=all_years,
-    subs='no',id_by='val',extrema_tolerance=10,
-    smooth_window=[19,5],save_or_show='show')
+#fitter('NCH4',x_axis='NWT',split_by_param='NTs10',marker_set=0,years=all_years,
+    #subs='no',id_by='val',extrema_tolerance=10,
+    #smooth_window=[19,5],save_or_show='show')
 
 
 #splitter('NTs10')
