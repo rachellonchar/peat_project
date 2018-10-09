@@ -142,11 +142,17 @@ mainD = cwd[:-5]
 sys.path.insert(0, mainD+'/code')
 
 #easy picture namer
-def gn(pic_name='temporary',sub_dirc=None):
-    if sub_dirc!=None:
+def gn(pic_name='temporary',sub_dirc=None,redirect=None):
+    if sub_dirc!=None and redirect!=None:
         main_folder = mainD+'/g/'+urlify(sub_dirc)+'/'
     else:
-        main_folder = mainD+'/g/'
+        if redirect!=None:
+            mainP = redirect
+        else:
+            mainP = mainD
+        mainP = mainD if type(redirect)==type(None) else redirect
+        fol = '' if type(sub_dirc)==type(None) else sub_dirc
+        main_folder = mainP+'/g/'+fol
     return main_folder+urlify(pic_name)
 
 import pickle

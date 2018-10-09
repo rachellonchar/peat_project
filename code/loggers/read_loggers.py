@@ -1,6 +1,11 @@
 #import data 
 #read tex file
 
+#regular code directory setup:
+import sys, os, os.path
+cwd = os.getcwd()
+cwd_code = cwd[:-8]
+sys.path.insert(0, cwd_code+'/prelims')
 from save_funcs import *
 import re
 
@@ -17,19 +22,19 @@ for logr in os.listdir(path=logger_dir):
         if file.endswith(".txt"):
             log_file_dater = file[len(logr)+1:-4]
             #comment to force txt file overwrite:
-            #try:
-                #logr_dic = load_obj(logr,parent_folder=mainD)
-            #except:
-                #print('no obj '+logr+'...creating obj now')
-                #logr_dic = {}
-                #for rts in read_types:
-                    #logr_dic.update({rts:[]})
-                #logr_dic.update({'data files already processed':[]})
+            try:
+                logr_dic = load_obj(logr,parent_folder=mainD)
+            except:
+                print('no obj '+logr+'...creating obj now')
+                logr_dic = {}
+                for rts in read_types:
+                    logr_dic.update({rts:[]})
+                logr_dic.update({'data files already processed':[]})
             #uncomment to force rewrite:
-            logr_dic = {}
-            for rts in read_types:
-                logr_dic.update({rts:[]})
-            logr_dic.update({'data files already processed':[]})
+            #logr_dic = {}
+            #for rts in read_types:
+                #logr_dic.update({rts:[]})
+            #logr_dic.update({'data files already processed':[]})
             if log_file_dater in logr_dic['data files already processed']:
                 print('...')
             else:
