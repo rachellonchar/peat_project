@@ -21,6 +21,13 @@ def per(Xvar,threshold):
         Xvar = ['period of inundation',threshold]
     return Xvar
 
+def namer(Xvar,dev=0):
+    ro = list_to_name(Xvar,base=1)
+    if dev==1:
+        ro = 'deviations of ' +ro
+    return ro
+    
+
 def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',Yvar='CH4_S1',color='NTs10',col_map='coolwarm',
     deviations_predictor='NTs10',dev_fit_type=btf.func_exp,mask_events='inundated',show_masked_pts=0,
     pic_name=None, pic_folder_name='net_inundation_aeration_periods',save_or_show='show',cwd=cwd,deviations_applied_to='y'):
@@ -41,19 +48,23 @@ def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',
     if type(deviations_predictor) != type(None):
         if deviations_applied_to=='y':
             Y = deviations_from_fit(deviations_predictor, Yvar, fit_type=dev_fit_type,mask=None)
+            ndy,ndx,ndc = 1,0,0
         else:
             Y = notation_fix(Yvar)
         if deviations_applied_to=='x':
             X = deviations_from_fit(deviations_predictor, Xvar, fit_type=dev_fit_type,mask=None)
             Xvar = 'dev'
+            ndy,ndx,ndc = 0,1,0
         else:
             None
         if deviations_applied_to=='c':
             ColorV = deviations_from_fit(deviations_predictor, color, fit_type=dev_fit_type,mask=None)
+            ndy,ndx,ndc = 0,0,1
         else:
             ColorV = notation_fix(color)
     else:
         Y,ColorV = notation_fix(Yvar),notation_fix(color)
+        ndy,ndx,ndc = 0,0,0
     maxD, minD = max(ColorV), min(ColorV)
     norm = matplotlib.colors.Normalize(vmin=minD, vmax=maxD, clip=True)
     mapper = cm.ScalarMappable(norm=norm, cmap=plt.cm.get_cmap(col_map))
@@ -98,12 +109,13 @@ def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',
                 plt.xlim(xmin=0,xmax=41)
         else:
             plt.xlim(xmin=min(Xexp),xmax=max(Xexp))
-        plt.colorbar(mapper,label='soil temp')
+        #print(color)
+        plt.colorbar(mapper,label=namer(color,ndc))
         plt.grid()
         ct+=1
-    fig.text(0.5, 0.04,list_to_name(Xvar,base=1)+' of '+t_e+' events', ha='center',fontdict=font)
+    fig.text(0.5, 0.04,list_to_name(Xvar,ndx)+' of '+t_e+' events', ha='center',fontdict=font)
     #fig.text(0.04, 0.5, 'CH4 residuals (based on soil temp at -10 cm)', va='center', rotation='vertical',fontdict=font)
-    fig.text(0.04, 0.5, list_to_name(Yvar,base=1), va='center', rotation='vertical',fontdict=font)
+    fig.text(0.04, 0.5, list_to_name(Yvar,ndy), va='center', rotation='vertical',fontdict=font)
     #plt.suptitle('Sensitivity to water table at different threshold definitions of '+t_e+' events',fontsize=16,fontdict=font)
     plt.suptitle('Sensitivity at different threshold definitions \n(to define '+t_e+' events)',fontsize=16,fontdict=font)
     plt.tight_layout()
@@ -119,20 +131,19 @@ def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',
         #pnam = pic_namer(pic_name, pic_folder_name)
         plt.savefig(gn(pic_name,pic_folder_name), bbox_inches='tight')
         
-#slope_at_thresholds(Xvar='period of inundation',Yvar='WT',color='NCH4_S1',
-    #pic_name='PoI_vs_WT',deviations_applied_to='c',save_or_show='save',col_map='Blues')
+#slope_at_thresholds(Xvar='WT',Yvar='NCH4_S1',color='Ts10',
+    #pic_name='WT_vs_dev_maskI',deviations_applied_to='y',mask_events='inundated',save_or_show='save')#,col_map='Blues')
 from marked_poisson_process import *
 
-var = 'period of inundation'
-#for thres in [0,3,5,7,8,9,10,11,12,15]:
-    #val_array,arrival_times = time_series(notation_fix([var,thres]))
-    #fit_exp(val_array,arrival_times,var_name=var+' (threshold='+str(thres)+')',
-        #name_fig='po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='save')
-
+var = 'period of aeration'
 for thres in [0,3,5,7,8,9,10,11,12,15]:
-    #val_array,arrival_times = time_series(notation_fix([var,thres]))
-    fit_exp(notation_fix([var,thres]),waiting_times=None,var_name=var+' (threshold='+str(thres)+')',
-        name_fig='BULK_po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='save')
+    val_array,arrival_times = time_series(notation_fix([var,thres]))
+    fit_exp(val_array,arrival_times,var_name=var+' (threshold='+str(thres)+')',
+        name_fig='po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='save')
+
+#for thres in [0,3,5,7,8,9,10,11,12,15]:
+    #fit_exp(notation_fix([var,thres]),waiting_times=None,var_name=var+' (threshold='+str(thres)+')',
+        #name_fig='BULK_po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='save')
 
 
 #depths_array,arrival_times = time_series(notation_fix('WT'))

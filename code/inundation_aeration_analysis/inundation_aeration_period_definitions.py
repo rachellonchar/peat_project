@@ -57,7 +57,7 @@ def threshold_mask(threshold=0,param='WT',dic=v,naming_dic=n):
     for idx in range(0, len(dic[param])):
         pt = dic[param][idx]
         #winter condition:
-        if dic['Ts10'][idx]<0.1:
+        if dic['Ts10'][idx]<0 or above>330 or below>330:
             #winter...ground too frozen - always mask this
             below, above = 0,0
             if not_winter:
@@ -161,6 +161,7 @@ def list_to_name(Tsoil,base=0):
             Tsoil = [n['full names'][Tsoil]]
         except:
             Tsoil = [Tsoil]
+        #print(Tsoil)
     if base==1:
         for modifier in [Tsoil[0]]:
             Tstring += ' '+str(modifier)

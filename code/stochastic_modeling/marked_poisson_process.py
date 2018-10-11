@@ -79,7 +79,7 @@ def fit_exp(depths,waiting_times=None,var_name='',name_fig='exp',name_fig_dirc=N
         midM = math.floor((maxM-minM)/2)
         mean_time = sum(waiting_times) / len(waiting_times)
         plt.subplot(1,2,2)
-        n1,n2,n3 = plt.hist(waiting_times, 80, histtype='bar',  normed=True,label='histogram of actual waiting times')
+        n1,n2,n3 = plt.hist(waiting_times, 150, histtype='bar',  normed=True,label='histogram of actual waiting times')
         maxF = round(max(n1),5)
         loc, scale = expon.fit(waiting_times.astype(np.float64), floc=0)
         x = np.linspace(expon.ppf(0.01,loc=loc,scale=scale),expon.ppf(0.99,loc=loc,scale=scale), 100)
