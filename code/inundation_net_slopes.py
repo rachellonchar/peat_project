@@ -105,13 +105,85 @@ def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',
         pnam = pic_namer(pic_name, pic_folder_name)
         plt.savefig(gn(pic_name,pic_folder_name), bbox_inches='tight')
         
-    
-#slope_at_thresholds(Xvar='WT',save_or_show='save')
-#slope_at_thresholds(Xvar='WT',mask_events='aerated',save_or_show='save')
-#slope_at_thresholds(Xvar='period of inundation',save_or_show='save')
-#slope_at_thresholds(Xvar='period of aeration',save_or_show='save')
-slope_at_thresholds(Xvar='period of inundation',Yvar='WT',color='NCH4_S1',deviations_applied_to='c',save_or_show='show',col_map='Blues')
+#slope_at_thresholds(Xvar='period of inundation',Yvar='WT',color='NCH4_S1',deviations_applied_to='c',save_or_show='show',col_map='Blues')
+from marked_poisson_process import *
 
-#slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',Yvar='CH4_S1',color='NTs10',col_map='coolwarm',
-    #deviations_predictor='NTs10',dev_fit_type=btf.func_exp,mask_events='inundated',show_masked_pts=0,
-    #pic_name=None, pic_folder_name=None,save_or_show='show',cwd=cwd)
+#for thres in [0,3,5,7,9,10,11,12]:
+    #depths_array,arrival_times = time_series(notation_fix(['period of aeration',thres]))
+    #fit_exp(depths_array,arrival_times,save_or_show='hold')
+#plt.show()
+
+#depths_array,arrival_times = time_series(notation_fix('WT'))
+#fit_exp(notation_fix('WT'),save_or_show='hold')
+plt.hist(notation_fix('WT'), 50, histtype='bar',  normed=True)#,label='histogram of actual rainfall depths')
+plt.show()
+
+
+
+
+
+
+
+
+
+
+##plot function
+#from scipy.stats import expon, gamma
+#def fit_exp(Xvar,waiting_times=None,name_fig='exp',mask=None):
+    #XX = notation_fix(Xvar)
+    ##print(depths)
+    ##mean_time = sum(waiting_times) / len(waiting_times)
+    ##if max(depths)>40:
+        ##bars = math.ceil(max(depths))
+    ##else:
+        ##bars = 40
+    #mask_events = 'aerated'
+    #mask,dic,ndic = notation_fix(['mask','mask '+mask_events+' events',9],ret_dics=1)
+    #bars=30
+    ##if mask!=None:
+    #Xmsk = np.ma.masked_array(XX,mask=mask)
+    #depths = Xmsk.compressed()
+    ##else:
+        ##depths = XX
+    #mean_depth = sum(depths) / len(depths)
+    
+    #if type(waiting_times)==type(None):
+        #fig, ax = plt.subplots(ncols=1,nrows=1,  sharex=True, sharey=True, figsize=(9,9))
+        #plt.subplot(1,1,1)
+    #else:
+        #fig, ax = plt.subplots(ncols=1,nrows=2,  sharex=True, sharey=True, figsize=(17,9))
+        #plt.subplot(1,2,1)
+    #plt.hist(depths, bars, histtype='bar',  normed=True,label='histogram of actual rainfall depths')
+    #loc, scale = expon.fit(depths.astype(np.float64), floc=0)
+    #x = np.linspace(expon.ppf(0.01,loc=loc,scale=scale),expon.ppf(0.99,loc=loc,scale=scale), 100)
+    #plt.plot(x, expon.pdf(x,loc=loc,scale=scale),'r-', lw=5, alpha=0.6, label='fitted pdf')
+    #print_on = 'FIT PARAMETERS\nlocation paramter: '+str(loc)+'\nscale parameter: '+str(scale)
+    #plt.annotate(print_on, xy=(40,.15), xycoords='data',color='darkred')
+    #plt.annotate('actual mean event depth (mm):\n'+str(mean_depth),xy=(40,.1), xycoords='data',color='darkblue')
+    #plt.legend()
+    #plt.xlabel('depth (mm)')
+    #plt.title('Rainfall depth fitted to an exponential distribution')
+    #plt.grid()
+    #plt.show()
+    ##if type(waiting_times)!=type(None):
+        ##plt.subplot(1,2,2)
+        ##plt.hist(waiting_times, 30, histtype='bar',  normed=True,label='histogram of actual waiting times')
+        ##loc, scale = expon.fit(waiting_times.astype(np.float64), floc=0)
+        ##x = np.linspace(expon.ppf(0.01,loc=loc,scale=scale),expon.ppf(0.99,loc=loc,scale=scale), 100)
+        ##plt.plot(x, expon.pdf(x,loc=loc,scale=scale),'r-', lw=5, alpha=0.6, label='fitting pdf')
+        ##print_on = 'FIT PARAMETERS\nlocation paramter: '+str(loc)+'\nscale parameter: '+str(scale)
+        ##plt.annotate(print_on, xy=(10,.3), xycoords='data',color='darkred')
+        ##plt.annotate('actual mean waiting time between events (days):\n'+str(mean_time),xy=(10,.2), xycoords='data',color='darkblue')
+        ##plt.legend()
+        ##plt.xlabel('time between rainfall events (days)')
+        ##plt.title('Waiting time for rainfall events fitted to an exponential distribution')
+        ##plt.grid()
+    ##fig.text(0.5, 0.04,'rainfall paramter', ha='center',fontdict=font)
+    ##fig.text(0.04, 0.5, 'frequency', va='center', rotation='vertical',fontdict=font)
+    ##plt.suptitle('Rainfall distributions',fontsize=16,fontdict=font)
+    ##plt.tight_layout()
+    ##plt.subplots_adjust(top=0.9,bottom=.1,left=.13)
+    ##plt.savefig(name_fig)
+#fit_exp(['period of inundation',9])
+
+

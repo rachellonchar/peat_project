@@ -26,6 +26,12 @@ import matplotlib.cm as cm
 import math
 from scipy.signal import argrelextrema, savgol_filter
 
+font = {'family': 'serif',
+        'color':  'darkred',
+        'weight': 'normal',
+        'size': 16,
+        }
+
 #unzipping dictionary contents 
 def unzip_dict(dictionary):
     keys = []
@@ -138,11 +144,13 @@ def urlify(s, replace_with='-'):
 
 #THIS directories location 
 cwd = os.getcwd()
-mainD = cwd[:-5]
-sys.path.insert(0, mainD+'/code')
+main_dirc = cwd.split('code', 1)[0]
+sys.path.insert(0, main_dirc+'code')
 
 #easy picture namer
 def gn(pic_name='temporary',sub_dirc=None,redirect=None):
+    cwd = os.getcwd()
+    mainD = cwd.split('code', 1)[0]
     if sub_dirc!=None and redirect!=None:
         main_folder = mainD+'/g/'+urlify(sub_dirc)+'/'
     else:
@@ -157,18 +165,22 @@ def gn(pic_name='temporary',sub_dirc=None,redirect=None):
 
 import pickle
 def save_obj(obj, name,parent_folder=None):
+    cwd = os.getcwd()
+    mainD = cwd.split('code', 1)[0]
     if parent_folder==None:
-        with open(mainD+'/obj/'+ name + '.pkl', 'wb') as f:
+        with open(mainD+'obj/'+ name + '.pkl', 'wb') as f:
             pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
     else:
         with open(parent_folder+ name + '.pkl', 'wb') as f:
             pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 def load_obj(name, parent_folder=None):
+    cwd = os.getcwd()
+    mainD = cwd.split('code', 1)[0]
     if parent_folder==None:
-        cwd = os.getcwd()
-        main_folder = cwd[:-5]
-        with open(mainD+'/obj/'+ name + '.pkl', 'rb') as f:
+        #cwd = os.getcwd()
+        #main_folder = cwd[:-5]
+        with open(mainD+'obj/'+ name + '.pkl', 'rb') as f:
             return pickle.load(f)
     else:
         with open(parent_folder+ name + '.pkl', 'rb') as f:

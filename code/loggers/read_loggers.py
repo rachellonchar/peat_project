@@ -1,19 +1,18 @@
-#import data 
-#read tex file
 
 #regular code directory setup:
 import sys, os, os.path
 cwd = os.getcwd()
-cwd_code = cwd[:-8]
+main_dirc = cwd.split('code', 1)[0]
+cwd_code = main_dirc + 'code'
 sys.path.insert(0, cwd_code+'/prelims')
 from save_funcs import *
+#-------------------------------------------
+
+
 import re
+cwd_data = main_dirc + 'data_files'
+logger_dir = cwd_data+'/jr_loggers'
 
-cwd = os.getcwd()
-data_dir = cwd[:-13]+'/data_files'
-logger_dir = data_dir+'/jr_loggers'
-
-mainD = cwd[:-13]+'/obj/' #for pickling
 log_ct = 0 
 read_types = ['Date','Time','ms','ch1','ch2']
 for logr in os.listdir(path=logger_dir):
@@ -23,7 +22,7 @@ for logr in os.listdir(path=logger_dir):
             log_file_dater = file[len(logr)+1:-4]
             #comment to force txt file overwrite:
             try:
-                logr_dic = load_obj(logr,parent_folder=mainD)
+                logr_dic = load_obj(logr)
             except:
                 print('no obj '+logr+'...creating obj now')
                 logr_dic = {}
@@ -73,5 +72,5 @@ for logr in os.listdir(path=logger_dir):
                     logr_dic.update({rts:merged})
                 obj_files = np.append(logr_dic['data files already processed'],log_file_dater)
                 logr_dic.update({'data files already processed':obj_files})
-                save_obj(logr_dic,logr,parent_folder=mainD)
+                save_obj(logr_dic,logr)
 print('...well logger objects up to date')
