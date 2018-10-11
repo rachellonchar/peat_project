@@ -1,16 +1,18 @@
 
-#regular code directory setup:
-import sys, os, os.path
-cwd = os.getcwd()
-main_dirc = cwd.split('code', 1)[0]
-cwd_code = main_dirc + 'code'
-sys.path.insert(0, cwd_code+'/prelims')
-from save_funcs import *
-#-------------------------------------------
+##regular code directory setup:
+#import sys, os, os.path
+#cwd = os.getcwd()
+#main_dirc = cwd.split('code', 1)[0]
+#cwd_code = main_dirc + 'code'
+#sys.path.insert(0, cwd_code+'/prelims')
+#from save_funcs import *
+##-------------------------------------------
 
-from water_table_functions import *
-from substrate_directory import *
-from definitions import *
+#from water_table_functions import *
+#from substrate_directory import *
+
+from preamble import *
+from inundation_aeration_period_definitions import *
 
 def per(Xvar,threshold):
     if Xvar=='period of aeration':
@@ -21,7 +23,7 @@ def per(Xvar,threshold):
 
 def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',Yvar='CH4_S1',color='NTs10',col_map='coolwarm',
     deviations_predictor='NTs10',dev_fit_type=btf.func_exp,mask_events='inundated',show_masked_pts=0,
-    pic_name=None, pic_folder_name=None,save_or_show='show',cwd=cwd,deviations_applied_to='y'):
+    pic_name=None, pic_folder_name='net_inundation_aeration_periods',save_or_show='show',cwd=cwd,deviations_applied_to='y'):
         
     if Xvar=='period of aeration' or Yvar=='period of aeration':
         mask_events = 'inundated'
@@ -100,8 +102,10 @@ def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',
         plt.grid()
         ct+=1
     fig.text(0.5, 0.04,list_to_name(Xvar,base=1)+' of '+t_e+' events', ha='center',fontdict=font)
-    fig.text(0.04, 0.5, 'CH4 residuals (based on soil temp at -10 cm)', va='center', rotation='vertical',fontdict=font)
-    plt.suptitle('Sensitivity to water table at different threshold definitions of '+t_e+' events',fontsize=16,fontdict=font)
+    #fig.text(0.04, 0.5, 'CH4 residuals (based on soil temp at -10 cm)', va='center', rotation='vertical',fontdict=font)
+    fig.text(0.04, 0.5, list_to_name(Yvar,base=1), va='center', rotation='vertical',fontdict=font)
+    #plt.suptitle('Sensitivity to water table at different threshold definitions of '+t_e+' events',fontsize=16,fontdict=font)
+    plt.suptitle('Sensitivity at different threshold definitions \n(to define '+t_e+' events)',fontsize=16,fontdict=font)
     plt.tight_layout()
     plt.subplots_adjust(top=0.9,bottom=.1,left=.13)
     if pic_name==None:
@@ -112,21 +116,29 @@ def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',
         else:
             plt.show()
     else:
-        pnam = pic_namer(pic_name, pic_folder_name)
+        #pnam = pic_namer(pic_name, pic_folder_name)
         plt.savefig(gn(pic_name,pic_folder_name), bbox_inches='tight')
         
-#slope_at_thresholds(Xvar='period of inundation',Yvar='WT',color='NCH4_S1',deviations_applied_to='c',save_or_show='show',col_map='Blues')
-#from marked_poisson_process import *
+#slope_at_thresholds(Xvar='period of inundation',Yvar='WT',color='NCH4_S1',
+    #pic_name='PoI_vs_WT',deviations_applied_to='c',save_or_show='save',col_map='Blues')
+from marked_poisson_process import *
 
-#for thres in [0,3,5,7,9,10,11,12]:
-    #depths_array,arrival_times = time_series(notation_fix(['period of aeration',thres]))
-    #fit_exp(depths_array,arrival_times,save_or_show='hold')
-#plt.show()
+var = 'period of inundation'
+#for thres in [0,3,5,7,8,9,10,11,12,15]:
+    #val_array,arrival_times = time_series(notation_fix([var,thres]))
+    #fit_exp(val_array,arrival_times,var_name=var+' (threshold='+str(thres)+')',
+        #name_fig='po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='save')
+
+for thres in [0,3,5,7,8,9,10,11,12,15]:
+    #val_array,arrival_times = time_series(notation_fix([var,thres]))
+    fit_exp(notation_fix([var,thres]),waiting_times=None,var_name=var+' (threshold='+str(thres)+')',
+        name_fig='BULK_po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='save')
+
 
 #depths_array,arrival_times = time_series(notation_fix('WT'))
 #fit_exp(notation_fix('WT'),save_or_show='hold')
-plt.hist(notation_fix('WT'), 30, histtype='bar',  normed=True)#,label='histogram of actual rainfall depths')
-plt.show()
+#plt.hist(notation_fix('WT'), 30, histtype='bar',  normed=True)#,label='histogram of actual rainfall depths')
+#plt.show()
 
 
 

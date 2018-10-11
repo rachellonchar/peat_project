@@ -134,56 +134,14 @@ def extract_xl(special='', sheet_index=0, name_file='std (format: ~/xl/current_p
     else:
         print('This file does not exist---no content to extract.')
         
-import re
-def urlify(s, replace_with='-'):
-     # Remove all non-word characters (everything except numbers and letters)
-     s = re.sub(r"[^\w\s]", '', s)
-     # Replace all runs of whitespace with a single dash
-     s = re.sub(r"\s+", replace_with, s)
-     return s
+##unzip dictionary contents template:
 
-#THIS directories location 
-cwd = os.getcwd()
-main_dirc = cwd.split('code', 1)[0]
-sys.path.insert(0, main_dirc+'code')
-
-#easy picture namer
-def gn(pic_name='temporary',sub_dirc=None,redirect=None):
-    cwd = os.getcwd()
-    mainD = cwd.split('code', 1)[0]
-    if sub_dirc!=None:# and redirect!=None:
-        main_folder = mainD+'/g/'+sub_dirc+'/'
-    else:
-        main_folder = mainD+'/g/'
-        #if redirect!=None:
-            #mainP = redirect
-        #else:
-            #mainP = mainD
-        #mainP = mainD if type(redirect)==type(None) else redirect
-        #fol = '' if type(sub_dirc)==type(None) else sub_dirc
-        #main_folder = mainP+'/g/'+fol
-    return main_folder+urlify(pic_name)
-
-import pickle
-def save_obj(obj, name,parent_folder=None):
-    cwd = os.getcwd()
-    mainD = cwd.split('code', 1)[0]
-    if parent_folder==None:
-        with open(mainD+'obj/'+ name + '.pkl', 'wb') as f:
-            pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
-    else:
-        with open(parent_folder+ name + '.pkl', 'wb') as f:
-            pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
-
-def load_obj(name, parent_folder=None):
-    cwd = os.getcwd()
-    mainD = cwd.split('code', 1)[0]
-    if parent_folder==None:
-        #cwd = os.getcwd()
-        #main_folder = cwd[:-5]
-        with open(mainD+'obj/'+ name + '.pkl', 'rb') as f:
-            return pickle.load(f)
-    else:
-        with open(parent_folder+ name + '.pkl', 'rb') as f:
-            return pickle.load(f)
+#specify_dic = ...
+##----
+#keys, values = [],[]
+#for k, v in specify_dic.items():
+    #keys.append(k)
+    #values.append(v)
+#for var in zip(keys, values):
+    #exec( "%s=%s" % (var[0], var[1]))
 

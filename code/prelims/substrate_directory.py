@@ -32,32 +32,3 @@ substrate_dict = {'laio_loamy_sand':{'alpha':2, 'lam':.3, 'interception':0, 'T_p
     'k1':.001, 'k12':.003, 'y_0':-20, 'psi_s':-10,
     'k_s':10, 'n':.5, 'm':.2}#(4) paramters from s2 bog
                   }
-
-#PARAMTER SELECTION:
-soil_type = 'ex1_tamea'
-
-#unzipping dictionary contents 
-keys = []
-values = []
-print(substrate_dict[soil_type])
-for k, v in substrate_dict[soil_type].items():
-    keys.append(k)
-    values.append(v)
-for var in zip(keys, values):
-    exec( "%s=%s" % (var[0], var[1]))
-print(alpha)
-
-#SIMULATION PARAMETERS
-#user-defined paramters (independent of soil-type) 
-#np.random.seed(1)
-beta_limit = 0.01
-flux_limit = 40
-N = 30000
-dt = 0.1
-y_initial = -10
-sm_initial = .5 
-# readings are for mct simulation runs
-readings = 100  
-
-#ANALYTICAL DISCRETIZATION
-fineness = 50 #readings to take for pdf and cdf 

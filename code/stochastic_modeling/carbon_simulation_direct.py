@@ -4,17 +4,9 @@ import xlrd
 import scipy.special
 import scipy.integrate 
 from scipy.integrate import quad
-#from helpful_functions import unzip_dict, extract_lines, txt_out, xl_output, blockPrint, enablePrint
-#blockPrint()
 import math
 import random
 np.random.seed(1)
-#from water_table_functions import Y_ind, Rain_events, \
-    #simulation_paramters, lowerlim
-#from substrate_directory import substrate_dict
-#from substrate_directory import soil_type, beta_limit, flux_limit, \
-    #N, dt, y_initial, sm_initial, readings
-#enablePrint()
 
 #regular code directory setup:
 import sys, os, os.path
@@ -26,7 +18,7 @@ from save_funcs import *
 #-------------------------------------------
 
 from water_table_functions import *
-from substrate_directory import *
+from substrate_specification import *
 
 #----------------------------------------------------------------------------------
 print('Soil type selected from substrate directory: ')

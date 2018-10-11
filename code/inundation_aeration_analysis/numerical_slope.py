@@ -1,22 +1,7 @@
-#regular code directory setup:
-import sys, os, os.path
-cwd = os.getcwd()
-sys.path.insert(0, cwd+'/prelims')
-from save_funcs import *
+
+from preamble import *
 import basic_fitting_funcs as ftf
-##-----------------------------------------------------------------------
-variables,naming = load_obj('new_parameters'),load_obj('new_naming')
-all_years = naming['years']
-from analysis_funcs_newdat import dict_call
-def updater(*params,normalized_to_all_years='no',stats='no'):
-    for param in params:
-        dict_call(param,variables, naming,normalized_to_all_years,stats)
-    return variables, naming
-font = {'family': 'serif',
-        'color':  'darkred',
-        'weight': 'normal',
-        'size': 16,
-        }
+
 #-----------------------------------------------------------------------
 def slope_2pts(xy1,xy2):
     x1,y1 = xy1[0],xy1[1]
