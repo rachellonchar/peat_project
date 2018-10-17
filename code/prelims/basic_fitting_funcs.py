@@ -36,6 +36,10 @@ def func_poly2(x,a0,a1,a2):
 def func_poly3(x,a0,a1,a2,a3):
     return func_poly(x,a0,a1,a2,a3)
 
+def func_poly2_EX(x_fix):
+    def funn(x,a,c): return a+c*(-2*x_fix*x + x**2)
+    return funn
+
 def func_poly2_fixed_endpoints(xy1,xy2):
     x1,y1 = xy1[0],xy1[1]
     x2,y2 = xy2[0],xy2[1]
@@ -54,24 +58,35 @@ def model_type(funct):
     else:
         return funct
 
-def pre_plot(tupl,fit_type='poly'):#,y_axis=None):
+def pre_plot(tupl,fit_type='poly',x_fix=None):#,y_axis=None):
     if fit_type=='poly':
         strg = 'f(x) = %5.3f + %5.3fx'
         for i in range(2, len(tupl)):
-            strg += ' %5.3fx^'+str(i)
+            strg += '\n+%5.5fx^'+str(i)
         return strg % tuple(tupl)
     #elif fit_type=='linear'
     elif fit_type==func_exp:
         return 'f(x) = %5.3fexp(%5.3fx)' % tuple(tupl)
     elif fit_type==func_logistic:
         return ' %5.3f/{1 + %5.3fexp(-%5.3fx)}+%5.3f' % tuple(tupl)
+    else:
+        if x_fix==None:
+            x_fix = 'xEX'
+        p1 = 'f(x) = %5.3f + \n%5.5f(-2(' % tuple(tupl)
+        return p1 + str(x_fix)+')x + x^2'
 
 def fit_2sets(X_series,Y_series, fit_func=func_linear, mask=None):
-            
-    X,Y = X_series, Y_series
+    
+    #indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
+    #X,Y = X_series[indices], Y_series[indices]
+    #X,Y = X_series, Y_series
+    indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
+    X = [X_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+    Y = [Y_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
     if type(mask)!=type(None):
-        Xm = np.ma.masked_array(X,mask=mask)
-        Ym = np.ma.masked_array(Y,mask=mask)
+        mas = [mask[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+        Xm = np.ma.masked_array(X,mask=mas)
+        Ym = np.ma.masked_array(Y,mask=mas)
         X,Y = Xm.compressed(), Ym.compressed()
     popt, pcov = curve_fit(fit_func, X, Y)#,sigma=sigma)
     def newf(x): return fit_func(x,*popt)
@@ -83,10 +98,19 @@ def fit_2sets(X_series,Y_series, fit_func=func_linear, mask=None):
     return dic1
 
 def lin_fit(X_series,Y_series, mask=None,type_return='slope'):
-    X,Y = X_series, Y_series
+    
+    indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
+    X = [X_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+    Y = [Y_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+    #for ii in indices:
+        #if ii!=True:
+            #print(ii)
+    #X,Y = np.array(X_series[indices]), np.array(Y_series[indices])
+    #X,Y = X_series, Y_series
     if type(mask)!=type(None):
-        Xm = np.ma.masked_array(X,mask=mask)
-        Ym = np.ma.masked_array(Y,mask=mask)
+        mas = [mask[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+        Xm = np.ma.masked_array(X,mask=mas)
+        Ym = np.ma.masked_array(Y,mask=mas)
         X,Y = Xm.compressed(), Ym.compressed()
     #print(X,Y)
     slope, intercept, rvalue, pvalue, stderr = linregress(X,Y)

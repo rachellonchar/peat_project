@@ -11,24 +11,24 @@
 #from water_table_functions import *
 #from substrate_directory import *
 
-from preamble import *
+#from preamble import *
 from inundation_aeration_period_definitions import *
 
-def per(Xvar,threshold):
-    if Xvar=='period of aeration':
-        Xvar = ['period of aeration',threshold]
-    elif Xvar=='period of inundation':
-        Xvar = ['period of inundation',threshold]
-    return Xvar
+#def per(Xvar,threshold):
+    #if Xvar=='period of aeration':
+        #Xvar = ['period of aeration',threshold]
+    #elif Xvar=='period of inundation':
+        #Xvar = ['period of inundation',threshold]
+    #return Xvar
 
-def namer(Xvar,dev=0):
-    ro = list_to_name(Xvar,base=1)
-    if dev==1:
-        ro = 'deviations of ' +ro
-    return ro
+#def namer(Xvar,dev=0):
+    #ro = list_to_name(Xvar,base=1)
+    #if dev==1:
+        #ro = 'deviations of ' +ro
+    #return ro
     
 
-def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',Yvar='CH4_S1',color='NTs10',col_map='coolwarm',
+def slope_at_thresholds(thresholds_array=[-5,10,14.1,25],Xvar='period of aeration',Yvar='CH4_S1',color='NTs10',col_map='coolwarm',
     deviations_predictor='NTs10',dev_fit_type=btf.func_exp,mask_events='inundated',show_masked_pts=0,
     pic_name=None, pic_folder_name='net_inundation_aeration_periods',save_or_show='show',cwd=cwd,deviations_applied_to='y'):
         
@@ -84,11 +84,30 @@ def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',
         Xvar = per(Xvar,threshold)
         if Xvar != 'dev':
             X = nf(Xvar)
+        
+        ##linear model
         fun, print_fun = btf.lin_fit(X,Y,mask=mask,type_return='function and print')
+        
+        #quad model, fixed extrema
+        #pick_minx = 9.3
+        #dicF = btf.fit_2sets(X,Y, fit_func=btf.func_poly2_EX(pick_minx), mask=mask)
+        #fun, print_fun = dicF['function'],dicF['print function']
+        #popt = dicF['parameters']
+        #xopt = pick_minx#-popt[1]/(2*popt[2])
+        #yopt = fun(xopt)
+        #plt.plot([xopt],[yopt],'yo',label='min:('+str(round(xopt,4))+','+str(round(yopt,4))+')')
+        
+        #quad model, regular
+        #dicF = btf.fit_2sets(X,Y, fit_func=btf.func_poly2, mask=mask)
+        #fun, print_fun = dicF['function'],dicF['print function']
+        #popt = dicF['parameters']
+        #xopt = -popt[1]/(2*popt[2])
+        #yopt = fun(xopt)
+        #plt.plot([xopt],[yopt],'yo',label='min:('+str(round(xopt,4))+','+str(round(yopt,4))+')')
+        
         Xexp,Yexp = btf.array_span(X, fun,dense=1,specify_points=20)
         if show_masked_pts==1:
             plt.scatter(X,Y,c='white',edgecolor='darkgrey')
-        
         Xmsk = np.ma.masked_array(X,mask=mask)
         Ymsk = np.ma.masked_array(Y,mask=mask)
         plt.plot(Xexp,Yexp,'r',label=print_fun)
@@ -96,7 +115,7 @@ def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',
         bill = [mapper.to_rgba(val) for val in col_msk.compressed()]
         plt.scatter(Xmsk.compressed(),Ymsk.compressed(),s=30,c=bill,cmap=mapper,
             edgecolor=bill,vmin=minD,vmax=maxD,label='all '+t_e+' events')
-        plt.legend(loc=2,ncol=1, fancybox=True,prop={'size':10})
+        plt.legend(loc=4,ncol=1, fancybox=True,prop={'size':8})
         #if ct>1:
         plt.title('threshold='+str(threshold))
         if type(Xvar)==str and (Xvar=='WT' or Xvar=='NWT'):
@@ -130,16 +149,52 @@ def slope_at_thresholds(thresholds_array=[0,5,7,8,10],Xvar='period of aeration',
     else:
         #pnam = pic_namer(pic_name, pic_folder_name)
         plt.savefig(gn(pic_name,pic_folder_name), bbox_inches='tight')
+
+xx='WT'
+yy='NCH4_S2'
+#yy='NCH4'
+co='Ts10'
+
+slope_at_thresholds(thresholds_array=[27,9.3],Xvar=xx,Yvar=yy,color=co,
+    deviations_applied_to='y',mask_events='inundated',pic_name='A2l',save_or_show='show')#,col_map='Blues')
+slope_at_thresholds(thresholds_array=[-9,9.3],Xvar=xx,Yvar=yy,color=co,
+    deviations_applied_to='y',mask_events='aerated',pic_name='I2l',save_or_show='show')#,col_map='Blues')
+plt.show()
+
         
 #slope_at_thresholds(Xvar='WT',Yvar='NCH4_S1',color='Ts10',
-    #pic_name='WT_vs_dev_maskI',deviations_applied_to='y',mask_events='inundated',save_or_show='save')#,col_map='Blues')
-from marked_poisson_process import *
+    #pic_name='WT_vs_dev_maskI',deviations_applied_to='y',mask_events='inundated',save_or_show='show')#,col_map='Blues')
+#from marked_poisson_process import *
 
-var = 'period of aeration'
-for thres in [0,3,5,7,8,9,10,11,12,15]:
-    val_array,arrival_times = time_series(notation_fix([var,thres]))
-    fit_exp(val_array,arrival_times,var_name=var+' (threshold='+str(thres)+')',
-        name_fig='po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='save')
+#var = 'period of aeration'
+#var2 = 'period of inundation'
+#for thres in [0,3,5,7,8,9,10,11,12,15]:
+    #val_array,arrival_times = time_series(notation_fix([var,thres]))
+    #fit_exp(val_array,arrival_times,var_name=var+' (threshold='+str(thres)+')',
+        #name_fig='po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='save')
+    #fit_exp(notation_fix([var,thres]),waiting_times=None,var_name=var+' (threshold='+str(thres)+')',
+        #name_fig='BULK_po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='save')
+
+#for thres in [10]:
+    #val_array,arrival_times = time_series(notation_fix([var,thres]))
+    #fit_exp(val_array,arrival_times,var_name=var+' (threshold='+str(thres)+')',
+        #name_fig='po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='hold')
+    #fit_exp(notation_fix([var,thres]),waiting_times=None,var_name=var+' (threshold='+str(thres)+')',
+        #name_fig='BULK_po'+var[10]+ str(thres),name_fig_dirc='net_inundation_aeration_periods/periods_as_MPPs',save_or_show='hold')
+#plt.show()
+
+#PoI = notation_fix([var2,5])
+#PoA = notation_fix([var,5])
+#TD = notation_fix('TotDays')
+#plt.plot(TD,PoI,'r',label=var2)
+#plt.plot(TD,PoA,'b',label=var)
+#plt.ylim(ymin=-25)
+#plt.legend()
+#plt.show()
+
+#for idx in range(0,len(notation_fix([var,5]))):
+    #if PoI[idx]!=0 and PoA[idx]!=0:
+        #print(idx,PoI[idx],PoA[idx])
 
 #for thres in [0,3,5,7,8,9,10,11,12,15]:
     #fit_exp(notation_fix([var,thres]),waiting_times=None,var_name=var+' (threshold='+str(thres)+')',
@@ -154,69 +209,5 @@ for thres in [0,3,5,7,8,9,10,11,12,15]:
 
 
 
-
-
-
-
-
-
-##plot function
-#from scipy.stats import expon, gamma
-#def fit_exp(Xvar,waiting_times=None,name_fig='exp',mask=None):
-    #XX = notation_fix(Xvar)
-    ##print(depths)
-    ##mean_time = sum(waiting_times) / len(waiting_times)
-    ##if max(depths)>40:
-        ##bars = math.ceil(max(depths))
-    ##else:
-        ##bars = 40
-    #mask_events = 'aerated'
-    #mask,dic,ndic = notation_fix(['mask','mask '+mask_events+' events',9],ret_dics=1)
-    #bars=30
-    ##if mask!=None:
-    #Xmsk = np.ma.masked_array(XX,mask=mask)
-    #depths = Xmsk.compressed()
-    ##else:
-        ##depths = XX
-    #mean_depth = sum(depths) / len(depths)
-    
-    #if type(waiting_times)==type(None):
-        #fig, ax = plt.subplots(ncols=1,nrows=1,  sharex=True, sharey=True, figsize=(9,9))
-        #plt.subplot(1,1,1)
-    #else:
-        #fig, ax = plt.subplots(ncols=1,nrows=2,  sharex=True, sharey=True, figsize=(17,9))
-        #plt.subplot(1,2,1)
-    #plt.hist(depths, bars, histtype='bar',  normed=True,label='histogram of actual rainfall depths')
-    #loc, scale = expon.fit(depths.astype(np.float64), floc=0)
-    #x = np.linspace(expon.ppf(0.01,loc=loc,scale=scale),expon.ppf(0.99,loc=loc,scale=scale), 100)
-    #plt.plot(x, expon.pdf(x,loc=loc,scale=scale),'r-', lw=5, alpha=0.6, label='fitted pdf')
-    #print_on = 'FIT PARAMETERS\nlocation paramter: '+str(loc)+'\nscale parameter: '+str(scale)
-    #plt.annotate(print_on, xy=(40,.15), xycoords='data',color='darkred')
-    #plt.annotate('actual mean event depth (mm):\n'+str(mean_depth),xy=(40,.1), xycoords='data',color='darkblue')
-    #plt.legend()
-    #plt.xlabel('depth (mm)')
-    #plt.title('Rainfall depth fitted to an exponential distribution')
-    #plt.grid()
-    #plt.show()
-    ##if type(waiting_times)!=type(None):
-        ##plt.subplot(1,2,2)
-        ##plt.hist(waiting_times, 30, histtype='bar',  normed=True,label='histogram of actual waiting times')
-        ##loc, scale = expon.fit(waiting_times.astype(np.float64), floc=0)
-        ##x = np.linspace(expon.ppf(0.01,loc=loc,scale=scale),expon.ppf(0.99,loc=loc,scale=scale), 100)
-        ##plt.plot(x, expon.pdf(x,loc=loc,scale=scale),'r-', lw=5, alpha=0.6, label='fitting pdf')
-        ##print_on = 'FIT PARAMETERS\nlocation paramter: '+str(loc)+'\nscale parameter: '+str(scale)
-        ##plt.annotate(print_on, xy=(10,.3), xycoords='data',color='darkred')
-        ##plt.annotate('actual mean waiting time between events (days):\n'+str(mean_time),xy=(10,.2), xycoords='data',color='darkblue')
-        ##plt.legend()
-        ##plt.xlabel('time between rainfall events (days)')
-        ##plt.title('Waiting time for rainfall events fitted to an exponential distribution')
-        ##plt.grid()
-    ##fig.text(0.5, 0.04,'rainfall paramter', ha='center',fontdict=font)
-    ##fig.text(0.04, 0.5, 'frequency', va='center', rotation='vertical',fontdict=font)
-    ##plt.suptitle('Rainfall distributions',fontsize=16,fontdict=font)
-    ##plt.tight_layout()
-    ##plt.subplots_adjust(top=0.9,bottom=.1,left=.13)
-    ##plt.savefig(name_fig)
-#fit_exp(['period of inundation',9])
 
 

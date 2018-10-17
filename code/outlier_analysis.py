@@ -1,4 +1,15 @@
-from definitions import *
+#from definitions import *
+
+#regular code directory setup:
+import sys, os, os.path
+cwd = os.getcwd()
+main_dirc = cwd.split('code', 1)[0]
+cwd_code = main_dirc + 'code'
+sys.path.insert(0, cwd_code+'/prelims')
+from save_funcs import *
+
+sys.path.insert(0, cwd_code+'/inundation_aeration_analysis')
+from inundation_aeration_period_definitions import *
 
 def plot_basic(X,Y,deviations_predictor=None,dev_fit_type=btf.func_exp,
     fit_type=btf.func_linear,num_of_outliers=30):
@@ -28,7 +39,7 @@ def plot_basic(X,Y,deviations_predictor=None,dev_fit_type=btf.func_exp,
     plt.show()
 
 
-#plot_basic(X='NWT',Y=p2,deviations_predictor='NTs10')
+#plot_basic(X='NWT',Y='NCH4_S1',deviations_predictor='NTs10')
 ##plot_basic(X='NWT',Y=p2)
 #plt.show()
 
@@ -89,9 +100,9 @@ def plot_outliers_vslope(X,Y,deviations_predictor=None,dev_fit_type=btf.func_exp
         
 #plot_outliers(X='NWT',Y='devs',deviations_predictor='NTs10')
 
-p2 = 'CH4_S1'
-#plot_outliers_vslope(X=['period of inundation',0],Y=p2,deviations_predictor='NTs10')
-plot_outliers_vslope(X='WT',Y=p2,deviations_predictor='NTs10')
-#plot_outliers_vslope(X='NWT',Y=p2)
-plt.show()
+#p2 = 'CH4_S1'
+##plot_outliers_vslope(X=['period of inundation',0],Y=p2,deviations_predictor='NTs10')
+#plot_outliers_vslope(X='WT',Y=p2,deviations_predictor='NTs10')
+##plot_outliers_vslope(X='NWT',Y=p2)
+#plt.show()
 

@@ -32,6 +32,7 @@ def time_series(rains,canopy_catch=0):
         if value == 0:
             count += 1
         elif value == 1:
+            count += 1
             arrival_times.append(count)
             count = 1
     arrival_times = np.array(arrival_times)
@@ -55,7 +56,7 @@ def fit_exp(depths,waiting_times=None,var_name='',name_fig='exp',name_fig_dirc=N
     #plt.hist(depths, 40, histtype='bar',  normed=True,label='histogram of actual rainfall depths')
     n1,n2,n3 = plt.hist(depths, 40, histtype='bar',  normed=True,label='histogram of measurements/simulations')
     maxF = round(max(n1),5)
-    if type(waiting_times)!=type(None):
+    if type(waiting_times)==type(None):
         locc = 0
     else:
         locc = 1
@@ -81,7 +82,7 @@ def fit_exp(depths,waiting_times=None,var_name='',name_fig='exp',name_fig_dirc=N
         plt.subplot(1,2,2)
         n1,n2,n3 = plt.hist(waiting_times, 150, histtype='bar',  normed=True,label='histogram of actual waiting times')
         maxF = round(max(n1),5)
-        loc, scale = expon.fit(waiting_times.astype(np.float64), floc=0)
+        loc, scale = expon.fit(waiting_times.astype(np.float64), floc=1)
         x = np.linspace(expon.ppf(0.01,loc=loc,scale=scale),expon.ppf(0.99,loc=loc,scale=scale), 100)
         plt.plot(x, expon.pdf(x,loc=loc,scale=scale),'r-', lw=5, alpha=0.6, label='fitting pdf')
         print_on = 'FIT PARAMETERS\nlocation paramter: '+str(loc)+'\nscale parameter: '+str(scale)

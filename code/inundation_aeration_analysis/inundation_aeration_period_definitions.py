@@ -54,6 +54,7 @@ def threshold_mask(threshold=0,param='WT',dic=v,naming_dic=n):
     yr=1
     below, above = 0,0
     dic2 = {}
+    permA,permI = [],[]
     for idx in range(0, len(dic[param])):
         pt = dic[param][idx]
         #winter condition:
@@ -68,6 +69,7 @@ def threshold_mask(threshold=0,param='WT',dic=v,naming_dic=n):
         #threshold condition for parameter of choice:
         if pt>threshold: # inundated
             if dic[param][idx-1]<=threshold:
+                permI.append(above)
                 above = 0
                 #print('enters')
             mask_above[idx] = 1 # masks the inundated pt
@@ -78,6 +80,7 @@ def threshold_mask(threshold=0,param='WT',dic=v,naming_dic=n):
             #below = 0
         else: #aerated
             if dic[param][idx-1]>threshold:
+                permA.append(below)
                 below = 0
             mask_below[idx] = 1 # masks the aerated pt
             below += 1
@@ -88,6 +91,8 @@ def threshold_mask(threshold=0,param='WT',dic=v,naming_dic=n):
     try:
         dic['period of inundation'].update({threshold:days_above})
         dic['period of aeration'].update({threshold:days_below})
+        dic['permanence time in aerated state'].update({threshold:permA})
+        dic['permanence time in inundated state'].update({threshold:permI})
         vec_thresholds = naming_dic['threholds']
     except:
         ta,tb = {},{}
@@ -95,6 +100,11 @@ def threshold_mask(threshold=0,param='WT',dic=v,naming_dic=n):
         tb.update({threshold:days_below})
         dic.update({'period of inundation':ta})
         dic.update({'period of aeration':tb})
+        ta,tb = {},{}
+        ta.update({threshold:permA})
+        tb.update({threshold:permI})
+        dic.update({'permanence time in aerated state':ta})
+        dic.update({'permanence time in inundated state':tb})
         vec_thresholds = []
     vec_thresholds.append(threshold)
     naming_dic.update({'threholds':vec_thresholds})
@@ -303,3 +313,16 @@ def find_stable_slope(X,Y,deviations_predictor=None,dev_fit_type=btf.func_exp,
             converged = True
             outs_removed = 'does not converge after '+str(num_of_outliers-1)
     return fdic, nmask,outs_removed
+
+def per(Xvar,threshold):
+    if Xvar=='period of aeration':
+        Xvar = ['period of aeration',threshold]
+    elif Xvar=='period of inundation':
+        Xvar = ['period of inundation',threshold]
+    return Xvar
+
+def namer(Xvar,dev=0):
+    ro = list_to_name(Xvar,base=1)
+    if dev==1:
+        ro = 'deviations of ' +ro
+    return ro

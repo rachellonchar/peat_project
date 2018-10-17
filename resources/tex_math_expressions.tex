@@ -1,0 +1,540 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath,amssymb,amsthm,enumerate}
+\usepackage{hyperref}
+
+\setlength{\oddsidemargin}{.1in}
+\setlength{\evensidemargin}{.1in}
+\setlength{\textwidth}{6.4in}
+\setlength{\topmargin}{0in}
+\setlength{\headsep}{.20in}
+\setlength{\textheight}{8.5in}
+
+
+
+
+
+\pdfpagewidth 8.5in
+ \pdfpageheight 11in
+
+
+%General
+\newcommand{\FF}{\mathbb F}
+\newcommand{\ZZ}{\mathbb Z}
+\newcommand{\RR}{\mathbb R}
+\newcommand{\QQ}{\mathbb Q}
+\newcommand{\CC}{\mathbb C}
+\newcommand{\NN}{\mathbb N}
+\newcommand{\Zn}[1]{\mathbb{Z}/#1\mathbb{Z}}
+\newcommand{\Znx}[1]{(\mathbb{Z}/#1\mathbb{Z})^\times}
+\newcommand{\X}{\times} 
+\newcommand{\set}[2]{\left\{#1 : #2\right\}}          
+\newcommand{\sett}[1]{\left\{#1\right\}}                
+\newcommand{\nonempty}{\neq\varnothing}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\abs}[1]{\left| {#1} \right|}
+\newcommand{\qedbox}{\rule{2mm}{2mm}}
+\renewcommand{\qedsymbol}{\qedbox}											
+\newcommand{\aand}{\qquad\hbox{and}\qquad}
+\newcommand{\e}{\varepsilon}
+\newcommand{\tto}{\rightrightarrows}
+\newcommand{\gs}{\geqslant}
+\newcommand{\ls}{\leqslant}
+\renewcommand{\tilde}{\widetilde}
+\renewcommand{\hat}{\widehat}
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\md}[3]{#1\equiv#2\;(\mathrm{mod}\;#3)}     
+\newcommand{\gen}[1]{\left\langle #1 \right\rangle}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\zero}{\boldsymbol{0}}
+
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\esssup}{\operatorname{ess\:sup}}
+\newcommand{\id}{\operatorname{id}}
+\newcommand{\card}{\operatorname{card}}
+
+\newcommand{\dmu}{\:\mathrm{d}\mu}
+\newcommand{\dm}{\:\mathrm{d}m}
+\newcommand{\dx}{\:\mathrm{d}x}
+\newcommand{\dt}{\:\mathrm{d}t}
+\newcommand{\dz}{\:\mathrm{d}z}
+\newcommand{\dtheta}{\:\mathrm{d}\theta}
+\newcommand{\dw}{\:\mathrm{d}w}
+
+%Algebra
+\newcommand{\Sym}{\operatorname {Sym}}
+\newcommand{\Stab}{\operatorname {Stab}}
+\newcommand{\M}{\operatorname{M}}
+\newcommand{\GL}{\operatorname{GL}}
+\newcommand{\SL}{\operatorname{SL}}
+\newcommand{\Heis}{\operatorname{Heis}}
+\newcommand{\Aff}{\operatorname{Aff}}
+\newcommand{\Aut}{\operatorname{Aut}}
+\newcommand{\image}{\operatorname{im}}
+\newcommand{\Syl}[2]{\operatorname{\emph{Syl}}_{#1}\left(#2\right)}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Tor}{\operatorname{Tor}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\ch}{\operatorname{ch}}
+\newcommand{\rad}{\operatorname{rad}}
+\newcommand{\iso}{\cong}
+\newcommand{\normal}{\unlhd}
+\newcommand{\semi}{\rtimes}
+\newcommand{\Nm}{\operatorname {N}}
+\newcommand{\Tr}{\operatorname {Tr}}
+\newcommand{\disc}{\operatorname {disc}}
+
+
+
+
+
+
+
+
+%Euler Script Characters
+\newcommand{\esa}{\EuScript{A}}
+\newcommand{\esb}{\EuScript{B}}
+\newcommand{\esc}{\EuScript{C}}
+\newcommand{\esd}{\EuScript{D}}
+\newcommand{\ese}{\EuScript{E}}
+\newcommand{\esf}{\EuScript{F}}
+\newcommand{\esg}{\EuScript{G}}
+\newcommand{\esh}{\EuScript{H}}
+\newcommand{\esi}{\EuScript{I}}
+\newcommand{\esj}{\EuScript{J}}
+\newcommand{\esk}{\EuScript{K}}
+\newcommand{\esl}{\EuScript{L}}
+\newcommand{\esm}{\EuScript{M}}
+\newcommand{\esn}{\EuScript{N}}
+\newcommand{\eso}{\EuScript{O}}
+\newcommand{\esp}{\EuScript{P}}
+\newcommand{\esq}{\EuScript{Q}}
+\newcommand{\esr}{\EuScript{R}}
+\newcommand{\ess}{\EuScript{S}}
+\newcommand{\est}{\EuScript{T}}
+\newcommand{\esu}{\EuScript{U}}
+\newcommand{\esv}{\EuScript{V}}
+\newcommand{\esw}{\EuScript{W}}
+\newcommand{\esx}{\EuScript{X}}
+\newcommand{\esy}{\EuScript{Y}}
+\newcommand{\esz}{\EuScript{Z}}
+
+%Calligraphic Characters
+\newcommand{\cala}{\mathcal{A}}
+\newcommand{\calb}{\mathcal{B}}
+\newcommand{\calc}{\mathcal{C}}
+\newcommand{\cald}{\mathcal{D}}
+\newcommand{\cale}{\mathcal{E}}
+\newcommand{\calf}{\mathcal{F}}
+\newcommand{\calg}{\mathcal{G}}
+\newcommand{\calh}{\mathcal{H}}
+\newcommand{\cali}{\mathcal{I}}
+\newcommand{\calj}{\mathcal{J}}
+\newcommand{\calk}{\mathcal{K}}
+\newcommand{\call}{\mathcal{L}}
+\newcommand{\calm}{\mathcal{M}}
+\newcommand{\caln}{\mathcal{N}}
+\newcommand{\calo}{\mathcal{O}}
+\newcommand{\calp}{\mathcal{P}}
+\newcommand{\calq}{\mathcal{Q}}
+\newcommand{\calr}{\mathcal{R}}
+\newcommand{\cals}{\mathcal{S}}
+\newcommand{\calt}{\mathcal{T}}
+\newcommand{\calu}{\mathcal{U}}
+\newcommand{\calv}{\mathcal{V}}
+\newcommand{\calw}{\mathcal{W}}
+\newcommand{\calx}{\mathcal{X}}
+\newcommand{\caly}{\mathcal{Y}}
+\newcommand{\calz}{\mathcal{Z}}
+
+%Gothic Characters
+\newcommand{\fraka}{\mathfrak{a}}
+\newcommand{\frakb}{\mathfrak{b}}
+\newcommand{\frakc}{\mathfrak{c}}
+\newcommand{\frakd}{\mathfrak{d}}
+\newcommand{\frake}{\mathfrak{e}}
+\newcommand{\frakf}{\mathfrak{f}}
+\newcommand{\frakg}{\mathfrak{g}}
+\newcommand{\frakh}{\mathfrak{h}}
+\newcommand{\fraki}{\mathfrak{i}}
+\newcommand{\frakj}{\mathfrak{j}}
+\newcommand{\frakk}{\mathfrak{k}}
+\newcommand{\frakl}{\mathfrak{l}}
+\newcommand{\frakm}{\mathfrak{m}}
+\newcommand{\frakn}{\mathfrak{n}}
+\newcommand{\frako}{\mathfrak{o}}
+\newcommand{\frakp}{\mathfrak{p}}
+\newcommand{\frakq}{\mathfrak{q}}
+\newcommand{\frakr}{\mathfrak{r}}
+\newcommand{\fraks}{\mathfrak{s}}
+\newcommand{\frakt}{\mathfrak{t}}
+\newcommand{\fraku}{\mathfrak{u}}
+\newcommand{\frakv}{\mathfrak{v}}
+\newcommand{\frakw}{\mathfrak{w}}
+\newcommand{\frakx}{\mathfrak{x}}
+\newcommand{\fraky}{\mathfrak{y}}
+\newcommand{\frakz}{\mathfrak{z}}
+
+\newcommand{\frakA}{\mathfrak{A}}
+\newcommand{\frakB}{\mathfrak{B}}
+\newcommand{\frakC}{\mathfrak{C}}
+\newcommand{\frakD}{\mathfrak{D}}
+\newcommand{\frakE}{\mathfrak{E}}
+\newcommand{\frakF}{\mathfrak{F}}
+\newcommand{\frakG}{\mathfrak{G}}
+\newcommand{\frakH}{\mathfrak{H}}
+\newcommand{\frakI}{\mathfrak{I}}
+\newcommand{\frakJ}{\mathfrak{J}}
+\newcommand{\frakK}{\mathfrak{K}}
+\newcommand{\frakL}{\mathfrak{L}}
+\newcommand{\frakM}{\mathfrak{M}}
+\newcommand{\frakN}{\mathfrak{N}}
+\newcommand{\frakO}{\mathfrak{O}}
+\newcommand{\frakP}{\mathfrak{P}}
+\newcommand{\frakQ}{\mathfrak{Q}}
+\newcommand{\frakR}{\mathfrak{R}}
+\newcommand{\frakS}{\mathfrak{S}}
+\newcommand{\frakT}{\mathfrak{T}}
+\newcommand{\frakU}{\mathfrak{U}}
+\newcommand{\frakV}{\mathfrak{V}}
+\newcommand{\frakW}{\mathfrak{W}}
+\newcommand{\frakX}{\mathfrak{X}}
+\newcommand{\frakY}{\mathfrak{Y}}
+\newcommand{\frakZ}{\mathfrak{Z}}
+
+%Lowercase Bold Letters
+\newcommand{\bfa}{\mathbf{a}}
+\newcommand{\bfb}{\mathbf{b}}
+\newcommand{\bfc}{\mathbf{c}}
+\newcommand{\bfd}{\mathbf{d}}
+\newcommand{\bfe}{\mathbf{e}}
+\newcommand{\bff}{\mathbf{f}}
+\newcommand{\bfg}{\mathbf{g}}
+\newcommand{\bfh}{\mathbf{h}}
+\newcommand{\bfi}{\mathbf{i}}
+\newcommand{\bfj}{\mathbf{j}}
+\newcommand{\bfk}{\mathbf{k}}
+\newcommand{\bfl}{\mathbf{l}}
+\newcommand{\bfm}{\mathbf{m}}
+\newcommand{\bfn}{\mathbf{n}}
+\newcommand{\bfo}{\mathbf{o}}
+\newcommand{\bfp}{\mathbf{p}}
+\newcommand{\bfq}{\mathbf{q}}
+\newcommand{\bfr}{\mathbf{r}}
+\newcommand{\bfs}{\mathbf{s}}
+\newcommand{\bft}{\mathbf{t}}
+\newcommand{\bfu}{\mathbf{u}}
+\newcommand{\bfv}{\mathbf{v}}
+\newcommand{\bfw}{\mathbf{w}}
+\newcommand{\bfx}{\mathbf{x}}
+\newcommand{\bfy}{\mathbf{y}}
+\newcommand{\bfz}{\mathbf{z}}
+
+
+
+
+%Customized Theorem Environments
+\newtheoremstyle%
+{custom}%
+{}%                         Space above
+{}%													Space below
+{}%													Body font
+{}%                         Indent amount
+{}%                         Theorem head font
+{.}%                        Punctuation after heading
+{ }%                        Space after heading
+{\thmname{}%                Additional specifications for theorem head
+\thmnumber{}%
+\thmnote{\bfseries #3}}%
+
+\newtheoremstyle%
+{Theorem}%
+{}%
+{}%
+{\itshape}%
+{}%
+{}%
+{.}%
+{ }%
+{\thmname{\bfseries #1}%
+\thmnumber{\;\bfseries #2}%
+\thmnote{\;(\bfseries #3)}}%
+
+%Theorem Environments
+\theoremstyle{Theorem}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem*{nonumthm}{Theorem}
+\newtheorem*{nonumprop}{Proposition}
+\theoremstyle{definition}
+\newtheorem{exe}{Exercise}
+\newtheorem{sol}{Solution}
+\newtheorem{definition}{Definition}[section]
+\newtheorem*{answer}{Answer}
+\newtheorem*{nonumdfn}{Definition}
+\newtheorem*{nonumex}{Example}
+\newtheorem{ex}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+\newtheorem*{note}{Note}
+\newtheorem*{notation}{Notation}
+\theoremstyle{custom}
+\newtheorem*{cust}{Definition}
+
+
+
+
+
+
+\begin{document}
+\pagestyle{empty}
+%\pagestyle{plain}
+
+\begin{center}
+\renewcommand{\arraystretch}{2}
+\begin{tabular}{|c||c|c|c|c|c||c|}
+\hline 
+Problem &$\quad 1 \quad $& $\quad 2 \quad $& $\quad 3 \quad $ & $\quad 4 \quad $ & $\quad 5 \quad $ & Total\\
+\hline
+Grade & & & & & & \\
+\hline 
+\end{tabular}
+\end{center}
+
+\begin{center}
+Math 5210 - Abstract Algebra I  \hfill Final Exam
+\end{center}
+
+
+{\bf Rachel Lonchar} 
+
+
+\bigskip
+                       
+
+\begin{exe} 
+Fix an integer $N > 1$.
+\begin{enumerate}[(a)]
+ 
+
+%Exercise 1
+\item  Show the matrix group 
+$$
+\left(\begin{array}{cc}
+N^\ZZ & \ZZ[1/N] \\ 0 & 1 
+\end{array}
+\right) 
+= 
+\left\{\left(
+\begin{array}{cc}
+N^k & r \\0 & 1 
+\end{array}
+\right) : k \in \ZZ, r \in \ZZ[1/N]\right\} 
+$$
+is generated by the two matrices 
+$(\begin{smallmatrix}N&0\\0&1\end{smallmatrix})$ and 
+$(\begin{smallmatrix}1&1\\0&1\end{smallmatrix})$.
+(Hint:  Play around with conjugates of each of these two matrices by the other matrix or its inverse. Write elements of 
+$\ZZ[1/N]$ as $a/N^\ell$ with $a \in \ZZ$ and $\ell \geq 0$. Do {\it not} use fractional exponents.) 
+
+
+\item  Denote the group in part (a) by $H_N$.  In $H_N$, $(\begin{smallmatrix}N&0\\0&1\end{smallmatrix})(\begin{smallmatrix}1&1\\0&1\end{smallmatrix})(\begin{smallmatrix}N&0\\0&1\end{smallmatrix})^{-1} = (\begin{smallmatrix}1&N\\0&1\end{smallmatrix}) = 
+(\begin{smallmatrix}1&1\\0&1\end{smallmatrix})^N$.  Show $H_N$ is ``universal for the property $xyx^{-1} = y^N$.'' 
+That is, if $G$ is any group containing two elements $x$ and $y$ such that $xyx^{-1} = y^N$, 
+show there is a unique group homomorphism $f \colon H_N \rightarrow G$ such that 
+$f(\begin{smallmatrix}N&0\\0&1\end{smallmatrix}) = x$ and 
+$f(\begin{smallmatrix}1&1\\0&1\end{smallmatrix}) = y$.  
+(Hint: From $xyx^{-1} = y^N$, show $x^myx^{-m} = y^{N^m}$ for $m \geq 0$.) 
+\end{enumerate}
+\end{exe} 
+
+\begin{sol}
+\begin{description} ~
+\item{(a)} For any $k,n,m\in \ZZ$ with $m\geq 0$, we have 
+$(\begin{smallmatrix}N^k&n/N^m\\0&1\end{smallmatrix})=(\begin{smallmatrix}1/N&n/N^m\\0&1\end{smallmatrix})(\begin{smallmatrix}N^{m+k}&0\\0&1\end{smallmatrix})=(\begin{smallmatrix}1/N^m&0\\0&1\end{smallmatrix})(\begin{smallmatrix}1&n\\0&1\end{smallmatrix})(\begin{smallmatrix}N^{m+k}&0\\0&1\end{smallmatrix})=(\begin{smallmatrix}1/N&0\\0&1\end{smallmatrix})^m(\begin{smallmatrix}1&1\\0&1\end{smallmatrix})^n(\begin{smallmatrix}N&0\\0&1\end{smallmatrix})^{m+k}=(\begin{smallmatrix}N&0\\0&1\end{smallmatrix})^{-m}(\begin{smallmatrix}1&1\\0&1\end{smallmatrix})^n(\begin{smallmatrix}N&0\\0&1\end{smallmatrix})^{m+k}$. Thus, the group $H_N$ is contained in the group generated by the two matrices 
+$(\begin{smallmatrix}N&0\\0&1\end{smallmatrix})$ and 
+$(\begin{smallmatrix}1&1\\0&1\end{smallmatrix})$. Since these two matrices are elements of $H_N$, the group generated by them is obviously contained in $H_N$ and so $H_N$ is the group generated by these two matrices. 
+\item{(b)} If we have $xyx^{-1} = y^N$, then let's assume that $x^{m-1}yx^{-(m-1)} = y^{N^{m-1}}$ for $m\geq 1$, and we shall prove that $x^myx^{-m} = y^{N^m}$. We have,
+\[x^myx^{-m} = x(x^{m-1}yx^{-(m-1)})x^{-1}=x(y^{N^{m-1}})x^{-1}=(y^{N^{m-1}})^N=y^{N^m},  \]
+so $x^myx^{-m} = y^{N^m}$ for $m \geq 0$ by induction. \\
+Since $H_N$ is generated by $(\begin{smallmatrix}N&0\\0&1\end{smallmatrix})$ and 
+$(\begin{smallmatrix}1&1\\0&1\end{smallmatrix})$, a mapping defined by the two unique generators will be a unique homorphism. Since $G$ is a group with this property and there is a unique homomorphism of $H_N$ to $G$, it must be true that $H_N$ is universal for this property as well. 
+\end{description}
+\end{sol}
+
+%Exercise 2
+\begin{exe} 
+Let's find all groups of order 2014 up to isomorphism.
+\begin{enumerate}[(a)]
+
+\item Show every group of order 2014 is isomorphic to a semidirect product $\ZZ/(1007) \rtimes_\varphi \ZZ/(2)$.
+(Remember the group law in $\ZZ/(1007)$ and $\ZZ/(2)$ is addition, not multiplication!) 
+
+\item Show there are four semidirect products in (a) and they are {\bf non-isomorphic} by checking that the groups 
+have different numbers of elements of order 2. 
+\end{enumerate}
+\end{exe} 
+
+\begin{sol}
+\begin{description} ~
+\item{(a)} Let $G$ be a group of order $2014$. The first Sylow theorem states that there are $p$-Sylow subgroups for each prime $p$ in the group's prime decomposition. Thus, there exists $19$-Sylow and $53$-Sylow subgroups ($2014=2\cdot 19\cdot 53$). Also the number of $19$-Sylow groups, $n_{19}$ is such that, $n_{19}|53\cdot 2$ and $n_{19}\equiv 1\mod 19$ by the Sylow theorems and $53\equiv 15\not\equiv 1\mod 19$, $2\not\equiv 1\mod 19$, so $n_{19}=1$. Similarly,  $n_{53}$ is such that, $n_{53}|19\cdot 2$ and $n_{53}\equiv 1\mod 53$ by the Sylow theorems and $19\not\equiv 1\mod 53$, $2\not\equiv 1\mod 53$, so $n_{53}=1$. Thus, there is a unique $19$-Sylow subgroup and a unique $53$-Sylow subgroup. Since all $p$-Sylow subgroups are conjugate, these subgroups must also be normal. \\
+Let $P$ be a subgroup of order $19$ and let $Q$ be a subgroup of order $53$. We are going to show that the set $PQ=\{ xy: x\in P, y\in Q \}$ is a subgroup and $PQ \cong P\times Q \cong \ZZ /(1007)$. Say $a,b\in PQ$. Then, $a=p_1q_1,b=p_2q_2$ for some $p_1,p_2\in P, q_1,q_2\in Q$. Then, 
+\[ab=p_1q_1p_2q_2=p_1(q_1p_2q_1^{-1})q_1q_2,  \]
+where $q_1p_2q_1^{-1}\in P$ since $P$ is normal so that $ p_1(q_1p_2q_1^{-1})\in P$ and $q_1q_2\in Q$, hence $ab\in PQ$, so that $PQ$ is closed. For inverses, we have $(pq)^{-1}=q^{-1}p^{-1}=(q^{-1}p^{-1}q)q^{-1}$, where $q^{-1}p^{-1}q\in P$ since $P$ is normal, so $PQ$ contains its inverses. Since $P$ and $Q$ are subgroups, they both contain $1$ so that $1(1)=1\in PQ$ and $PQ$ contains the identity. Thus, $PQ$ is a subgroup. \\
+We have that $P$ and $Q$ are normal in $G$. Thus, if we can show that $P\cap Q=1$, then we can use Theorem 9 from chapter 5 of Dummit and Foote to show that $PQ\cong P\times Q$. Say $x\in P\cap Q$. Then by Lagrange $|x||p$ and $|x||q$. Since $(p,q)=(19,53)=1$, we have that $|x|=1$, so that $|P\cap Q|=1$ and $P\cap Q=1$. Thus, $PQ\cong P\times Q$. The only group of prime order is the cyclic group; thus, $P$ and $Q$ are cyclic, and $P=\langle x \rangle$, $Q=\langle y \rangle$ for some generators $x,y$. \\
+We have $(x,y)\in P\times Q$. If $(x,y)^n=(1,1)$, then $(x^n,y^n)=(1,1)$, which implies that $p|n$ and $q|n$. Also, $|(x,y)||pq$, so $|(x,y)|=pq$ and $|P\times Q |=pq$. Since both $P\times Q$ and $\ZZ/(1007)$ are cyclic and $|P\times Q|=|\ZZ/(1007)|$, we have that $P\times Q\cong \ZZ/(1007)$ and we can conclude that $P Q\cong \ZZ/(1007)$, where $P, Q$ are normal. It follows that $PQ$, and hence $\ZZ/(1007)$ are normal in $G$. Also, $1007$ and $2$ are coprime, so $\ZZ/(1007)\cap \ZZ/(2)$ is trivial. \\
+Let $\phi: \ZZ/(2) \to \Aut (\ZZ/(1007))\cong (\ZZ/(1007))^{\times}$ be the homomorphism defined by mapping $k\in K$ to the automorphism of left conjugation by $k$ on $H$. Also, $HK$ is a subgroup of $G$. Since $|HK|=|G|$, we have $HK=G$, and it follows from Theorem 12 from chapter 5 in Dummit and Foote that, 
+\[G=HK\cong H \rtimes_\phi K.  \]
+In other words, any group $G$ of order 2014 is isomorphic to a semidirect product $\ZZ/(1007)\rtimes_\phi \ZZ/(2)$.
+\item{(b)} For any homomorphism $\phi :\ZZ/(2)\to \ZZ/(1007)\cong (\ZZ/(1007))^\times$ with $\phi(h)=xh$, $x$ must be such that $x^2\equiv 1\mod 1007$, so there are four possible maps, particularly, 
+\[\phi_1:h\mapsto h,~~~ \phi_2: h\mapsto 476h,~~~ \phi_3:  h\mapsto 531h,~~~\mbox{and }~~ \phi_4: h\mapsto 1006h. \]
+Since $\phi_1$ is the trivial map, using this homomorphism to define the semi-direct product $\ZZ/(1007)\rtimes_{\phi_1} \ZZ/(2)$ gives the direct product $\ZZ/(1007)\times \ZZ/(2)$, which is abelian. The other three maps are nontrivial, so the semi-direct products defined with them will be nonabelian. Thus, we need to show that $\ZZ/(1007)\rtimes_{\phi_2} \ZZ/(2)$, $\ZZ/(1007)\rtimes_{\phi_3} \ZZ/(2)$, and $\ZZ/(1007)\rtimes_{\phi_4} \ZZ/(2)$ are not isomorphic to one another. We'll call these groups $G_2,G_3,$ and $G_4$ respectively in order to simplify the notation. In $G_2$, an element $(h,1)$ has order 2 if $h+\phi_2(h)\equiv 1\mod 1007$, or $h+476h\equiv 477h\equiv 0\mod 1007$, so $h=19n$ with $n\in \ZZ$. Since $1007/19=53$, there are 53 elements of order 2 in $G_2$. \\
+In $G_3$, we have $h+531h\equiv 532h\equiv 0\mod 1007$, so $h=53n$ for $n\in \ZZ$ so there are $1007/52=19$ elements of order 2 in $G_3$. In $G_4$, we have $h+1006h\equiv 1007h\equiv 0\mod 1007$, so there is one element of order 2 in $G_3$. Since $G_2,G_3,G_4$ all have a different number of elements of order 2, they must non-isomorphic. Since $G_1$ is abelian and $G_2$ is nonabelian, they also cannot be isomorphic---$G_1$ cannot be isomorphoic to any of the others because the others are all nonabelian. 
+\end{description}
+\end{sol}
+
+%Exercise 3
+\begin{exe} 
+Let $R$ be a non-zero commutative ring.  Set 
+$$
+\Aff(R) = \left\{\left(\begin{array}{cc}a&b\\0&1\end{array}\right) : a \in R^\times, b \in R\right\}, 
+$$
+which is a group under matrix multiplication.  Let $I$ be the ideal in $R$ generated by 
+all $u - 1$ for $u \in R^\times$.  That is, $I$ is the set of finite sums $\sum_{i=1}^m r_i(u_i-1)$ 
+where $m \geq 1$, $r_i \in R$ and $u_i \in R^\times$.
+(For example, since $-1 \in R^\times$, $I$ contains $-1-1= -2$, so 
+$2R \subset I \subset R$.  Thus $I = R$ if $2 \in R^\times$, but if $2 \not\in R^\times$ then $I$ could be 
+a proper ideal.)
+\begin{enumerate}[(a)]
+\item If the group $R^\times$ is finitely generated by $u_1, \dots, u_n$, show 
+$I = (u_1 - 1, \dots, u_n - 1)$.  This is {\it not} needed for later parts, but just 
+gives an example of what $I$ can look like for some rings. 
+
+
+
+\item Show the commutator subgroup of $\Aff(R)$ is $(\begin{smallmatrix}1&I\\0&1\end{smallmatrix}) = 
+\{(\begin{smallmatrix}1&b\\0&1\end{smallmatrix}) : b \in I\}$. 
+% (Consequence: $\Aff(R)'$ is abelian, so $\Aff(R)''$ is trivial, so $\Aff(R)$ is solvable.  Solvability also comes from the series $\{I_2\} \lhd \{(\begin{smallmatrix}1&*\\0&1\end{smallmatrix})\} \lhd \Aff(R)$ having abelian quotient groups isomorphic to $R$ and $R^\times$.) 
+
+\item Show the center of $\Aff(R)$ is $\{(\begin{smallmatrix}1&b\\0&1\end{smallmatrix}) : bI = (0)\}$.
+\end{enumerate} 
+\end{exe} 
+
+\begin{sol}
+\begin{description}~
+\item{(a)} Each $x\in I$ is a finite sum, and for each term $x_i$ in $x$, we have $x_i=r_i(v_i-1)$, where $r_i\in R$ and $v_i\in R^\times$. If $x_i\not= 0$, then $v_i\not=1$, and since $u_1,...,u_n$ generates $R^\times$, we have $v_i=u_1^{e_1}\cdot ...\cdot u_n^{e_n}$ where $e_1,...,e_n\in \ZZ$, $e_j\not= 0$, and $u_j\not= 1$ for some $j\in 1,...,n$. Now,
+\begin{align*}
+ x_i=r_i(v_i-1)&=r_i(u_1^{e^1}\cdot ...\cdot u_j^{e_j}\cdot ...\cdot u_n^{e_n}-1) \\
+  & = r_i(u_j-1)(u_1^{e^1}\cdot ...\cdot u_j^{e_j-1}\cdot ...\cdot u_n^{e_n}-\frac{1}{u_j-1}+\frac{u_1^{e^1}\cdot ...\cdot u_j^{e_j-1}\cdot ...\cdot u_n^{e_n}}{u_j-1}),
+\end{align*}
+as $u_j\not= 1$ and $u_j,1\in R^\times$. Set $\lambda_j=r_i(u_1^{e^1}\cdot ...\cdot u_j^{e_j-1}\cdot ...\cdot u_n^{e_n}-\frac{1}{u_j-1}+\frac{u_1^{e^1}\cdot ...\cdot u_j^{e_j-1}\cdot ...\cdot u_n^{e_n}}{u_j-1})$. Thus, $\lambda_j\in R$ and $x_i=\lambda_j (u_j-1)$ for some $j\in 1,...,n$. If for some term $x_k$ in $x$, we have $x_k=\lambda_k(u_j-1)$, then set $t_j=\lambda_j+\lambda_k$. Combining all like terms in this way, we obtain the form $x=t_1(u_1-1)+...+t_n (u_n-1)$, where each $t_i\in R$ and where some of the $t_i$'s may be zero. Now if the original term $x_i$ is zero, then simply set $x_i=0(u_1-1)$. We have just shown that for any $x\in I$, $x\in (u_1-1,...,u_n-1)$ and hence $I\subset  (u_1-1,...,u_n-1)$. \\
+If $x\in (u_1-1,...,u_n-1)$, then $x=r_1(u_1-1)+...+r_n(u_n-1)=\sum_{i=1}^n r_i(u_i-1)$ where $n \geq 1$ (since $R $ is non-zero so one of the $u_i$'s must be non-zero and if $x=0$, then we may set $x=0(u_i-1)$ and thus have a sum at least one term long), $r_i \in R$ and $u_i \in R^\times$. By definition, this means that $x\in I$ and we have that $I = (u_1 - 1, \dots, u_n - 1)$ as desired. 
+\item{(b)} Let the commutator subgroup of $G=\Aff (R)$ be denoted by $G'$. For $(\begin{smallmatrix}a&b\\0&1\end{smallmatrix}),(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})\in G$, we have, 
+\begin{align*}
+ (\begin{smallmatrix}a&b\\0&1\end{smallmatrix})(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})(\begin{smallmatrix}a&b\\0&1\end{smallmatrix})^{-1}(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})^{-1} &=
+  (\begin{smallmatrix}a&b\\0&1\end{smallmatrix})(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})(\begin{smallmatrix}1/a&-b/a\\0&1\end{smallmatrix})(\begin{smallmatrix}1/c&-d/c\\0&1\end{smallmatrix}) \\
+&=  (\begin{smallmatrix}ac&ad+b\\0&1\end{smallmatrix})(\begin{smallmatrix}1/(ac)&-d/(ac)-b/a\\0&1\end{smallmatrix})  \\
+&=  (\begin{smallmatrix}1&d(a-1)+(-b)(c-1)\\0&1\end{smallmatrix}) \mbox{~~~~(Let } x=d(a-1)+(-b)(c-1).)\\ 
+&= (\begin{smallmatrix}1&x\\0&1\end{smallmatrix})
+\end{align*}
+where $d,-b\in R$ and $a,c\in R^\times$ and so $x\in I$ and all commutators of of $G$ are in $(\begin{smallmatrix}1&I\\0&1\end{smallmatrix})$ (i.e. $G'\subset (\begin{smallmatrix}1&I\\0&1\end{smallmatrix})$). \\
+If a  matrix is in $(\begin{smallmatrix}1&I\\0&1\end{smallmatrix})$, then it is of the form $(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})$ where $b\in I$. By (a), we have that $b=r_1(u_1-1)+...+r_n(u_n-1)$ for some $r_1,...,r_n\in R$. Notice, 
+\begin{align*}
+ [(\begin{smallmatrix}u_1&-r_2\\0&1\end{smallmatrix}),(\begin{smallmatrix}u_2&r_1\\0&1\end{smallmatrix})]=(\begin{smallmatrix}u_1&-r_2\\0&1\end{smallmatrix})(\begin{smallmatrix}u_2&r_1\\0&1\end{smallmatrix})(\begin{smallmatrix}u_1&-r_2\\0&1\end{smallmatrix})^{-1}(\begin{smallmatrix}u_2&r_1\\0&1\end{smallmatrix})^{-1} 
+&=  (\begin{smallmatrix}1&r_1(u_1-1)+r_2(u_2-1)\\0&1\end{smallmatrix}).
+\end{align*}
+Also, $(\begin{smallmatrix}1&x\\0&1\end{smallmatrix})(\begin{smallmatrix}1&y\\0&1\end{smallmatrix})=(\begin{smallmatrix}1&x+y\\0&1\end{smallmatrix})$. 
+Thus, if $n$ is even, we have, 
+\[(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})= [(\begin{smallmatrix}u_1&-r_2\\0&1\end{smallmatrix}),(\begin{smallmatrix}u_2&r_1\\0&1\end{smallmatrix})]\cdot
+[(\begin{smallmatrix}u_3&-r_4\\0&1\end{smallmatrix}),(\begin{smallmatrix}u_4&r_3\\0&1\end{smallmatrix})]\cdot ... \cdot [(\begin{smallmatrix}u_{n-1}&-r_n\\0&1\end{smallmatrix}),(\begin{smallmatrix}u_n&r_{n-1}\\0&1\end{smallmatrix})].       \]
+If $n$ is odd, then, 
+\[(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})= [(\begin{smallmatrix}u_1&-r_2\\0&1\end{smallmatrix}),(\begin{smallmatrix}u_2&r_1\\0&1\end{smallmatrix})]\cdot
+[(\begin{smallmatrix}u_3&-r_4\\0&1\end{smallmatrix}),(\begin{smallmatrix}u_4&r_3\\0&1\end{smallmatrix})]\cdot ... \cdot [(\begin{smallmatrix}u_n&0\\0&1\end{smallmatrix}),(\begin{smallmatrix}1&r_{n}\\0&1\end{smallmatrix})].       \]
+because $[(\begin{smallmatrix}u_n&0\\0&1\end{smallmatrix}),(\begin{smallmatrix}1&r_{n}\\0&1\end{smallmatrix})]=(\begin{smallmatrix}1&r_n(u_n-1)\\0&1\end{smallmatrix})$. Thus, $(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})$ is always a finite product of commutators, meaning $(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})\in G'$ and so the commutator subgroup of $\Aff(R)$ is $(\begin{smallmatrix}1&I\\0&1\end{smallmatrix}) = 
+\{(\begin{smallmatrix}1&b\\0&1\end{smallmatrix}) : b \in I\}$. 
+\item{(c)} Let the matrix $(\begin{smallmatrix}a&b\\0&1\end{smallmatrix})$ be in the center of $G$. Then, $(\begin{smallmatrix}1&1\\0&1\end{smallmatrix})(\begin{smallmatrix}a&b\\0&1\end{smallmatrix})=(\begin{smallmatrix}a&b\\0&1\end{smallmatrix})(\begin{smallmatrix}1&1\\1&1\end{smallmatrix})$, or $(\begin{smallmatrix}a&b+1\\0&1\end{smallmatrix})=(\begin{smallmatrix}a&b+a\\0&1\end{smallmatrix})$. This means that $b+1=b+a$, so $a=1$. If $(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})\in G$, then we also have $(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})=(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})(\begin{smallmatrix}c&d\\1&1\end{smallmatrix})$, or $(\begin{smallmatrix}c&cb+d\\0&1\end{smallmatrix})=(\begin{smallmatrix}c&d+b\\0&1\end{smallmatrix})$. Thus, $cb+d=d+b$, so 
+\[b(c-1)=d-d=0.\]
+Since $c\in R^\times$ is arbitrary, it must be true that $bI=(0)$. Thus, the center of $G$ is contained in $\{(\begin{smallmatrix}1&b\\0&1\end{smallmatrix}) : bI = (0)\}$. \\
+If we take arbitrary $(\begin{smallmatrix}1&b\\0&1\end{smallmatrix}) \in \{(\begin{smallmatrix}1&b\\0&1\end{smallmatrix}) : bI = (0)\}$ and $(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})\in G$, then we have
+\[(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})=(\begin{smallmatrix}c&d+b\\0&1\end{smallmatrix}), \]
+and 
+\[(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})=(\begin{smallmatrix}c&d+cb\\0&1\end{smallmatrix}). \]
+Since $bI=(0)$, we have 
+\[d+b-(d+cb)=d-d+b-cb=0+b(1-c)=b(1-c)=0.\]
+Thus, $(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})=(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})$ for all $(\begin{smallmatrix}c&d\\0&1\end{smallmatrix})\in G$ and $(\begin{smallmatrix}1&b\\0&1\end{smallmatrix})$ is in the center of $G$ as desired. We conclude that the center of $G=\Aff(R)$ is $\{(\begin{smallmatrix}1&b\\0&1\end{smallmatrix}) : bI = (0)\}$.
+\end{description}
+\end{sol}
+
+%Excercise 4 (skip)
+\begin{exe} 
+%Let $G$ be a finite abelian group and write $L(G)$ for the set of all functions $f \colon G \rightarrow \CC$. 
+%The three groups $G$, $\widehat{G}$, and $\CC^\times$ all act on $L(G)$:
+%\begin{itemize}
+%\item[(i)] (translation): $(T_gf)(x) = f(gx)$ for $g \in G$ and $x\in G$.
+%\item[(ii)] (modulation): $(M_\chi f)(x) = \chi(x)f(x)$ for $\chi \in \widehat{G}$ and $x \in G$.
+%\item[(iii)] (scaling): $(zf)(x) = z\cdot f(x)$ for $z \in \CC^\times$ and $x \in G$.
+%\end{itemize}
+%\noindent Using these, from one function $f \in L(G)$ we get potentially many functions 
+%$zM_\chi{T}_gf$ as  the parameters $z$, $\chi$, and $g$ vary. Explicitly, $(zM_\chi{T}_gf)(x) = z\chi(x)f(gx)$ for $x \in G$.
+
+%\begin{enumerate}[(a)]
+%\item Define a group law on the set $\CC^\times \times \widehat{G} \times G$ that makes the formula 
+%$(z,\chi,g)f = zM_\chi{T_g}f$ a group action of $\CC^\times \times \widehat{G} \times G$ on $L(G)$. 
+%Specify the group law and inversion, and verify it makes $\CC^\times \times \widehat{G} \times G$ a group 
+%and that you get a group action. (Be certain that you find the right group law here; it is {\bf not} the direct product. Parts (b) and (c) depend on this.)
+
+
+%\item %Let ${\rm H}(G)$ denote $\CC^\times \times \widehat{G} \times G$ equipped with the group law from part (a).  Comparing 
+%the formula for the group law in ${\rm H}(G)$ and the formula for multiplication of matrices in ${\rm Heis}(\RR)$ makes the two groups look analogous.  Use this analogy to decompose ${\rm H}(G)$ into a semidirect product of two abelian groups.  (Look up online how ${\rm Heis}(\RR)$ can be decomposed into a semidirect product, to get inspired.) 
+
+%\item Show the commutator subgroup of ${\rm H}(G)$ is all triples $(\alpha,{\mathbf 1},1)$ where $\alpha^m  = 1$ for $m$ the maximal order of all elements of $G$.
+%\end{enumerate} 
+
+\end{exe} 
+
+
+\begin{sol}
+
+\end{sol}
+
+%Exercise 5
+\begin{exe} 
+In class, we have seen that $\ZZ[i]$ is a euclidean domain with respect to the norm. Here we will deal with $\ZZ[\sqrt{3}]$.
+\begin{enumerate}[(a)]
+\item Prove $\ZZ[\sqrt{3}]$ is euclidean with respect to the absolute 
+value of the norm using the same method you have seen already for $\ZZ[i]$.  (Hint: $|x^2 - 3y^2| \leq \max(x^2, 3y^2)$ because 
+$x^2$ and $3y^2$ are both $\geq 0$.)
+
+\item Factor $2013 + 5210\sqrt{3}$ into a product of irreducibles in $\ZZ[\sqrt{3}]$.   
+(Hint: When you want to solve $x^2 - 3y^2 = \pm p$ for a prime number $p \not= 3$, you need to choose the sign 
+on the right so that $\pm p \equiv 1 \bmod 3$, since if $\pm p \equiv 2 \bmod 3$ then $x^2 \equiv 2 \bmod 3$, which is impossible.
+Having chosen the sign correctly, use a computer to calculate $3y^2 \pm p$ for $y = 1, 2, 3, \dots$ until it is recognizably a perfect square.) 
+
+
+\item Verify that $(5+2\sqrt{3})(8-3\sqrt{3})$ and $(7+2\sqrt{3})(4-\sqrt{3})$ are both 
+prime factorizations of $22+\sqrt{3}$ in $\ZZ[\sqrt{3}]$ and then 
+determine how the factors are matched with each other up to explicit unit multiple.
+\end{enumerate}
+\end{exe} 
+
+\begin{sol}
+\begin{description} ~
+\item{(a)} Let $\alpha =a+b\sqrt{3}$ and $\beta=c+d\sqrt{3}$ be two elements of $\ZZ[\sqrt{3}]$, with $\beta \not= 0$. Then in the field $\QQ(\sqrt{3})$ we have $\alpha/\beta =r+s\sqrt{3}$ where $r=(ac+bd)/(c^2+d^2)$ and $s=(bc-ad)/(c^2+d^2)$ are rational numbers. Let $p$ be an integer closest to $r$ and let $q$ be an integer closest to $s$, so that $|r-p|$ and $|s-q|$ are at most $1/2$. Let $\theta =(r-p)+\sqrt{3}(s-q)$ and set $\phi=\beta \theta$. Then, $\phi=\alpha -(p+q\sqrt{3})\beta$, so that $\phi\in \ZZ[\sqrt{3}]$ is a Gaussian integer and $\alpha=(p+q\sqrt{3})\beta +\phi$. Since 
+\[|N(\theta)|=|(r-p)^2-3(s-q)^2|\leq \max ((r-p)^2,3(s-q)^2)\leq 3/4 ,\] 
+the multiplicativity of the norm $N$ implies that $N(\phi)=N(\theta)N(\beta)\leq 3/4 N(\beta )$. Thus, $\ZZ[\sqrt{3}]$ is euclidean. 
+\item{(b)}
+\item{(c)}
+\end{description}
+\end{sol}
+
+\end{document}
+
+
+
+
+
+
+
