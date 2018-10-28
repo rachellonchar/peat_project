@@ -9,19 +9,15 @@ import random
 import xlwt
 import xlrd
                 
-from substrate_directory import substrate_dict
 #PARAMETERS THAT ARE INDEPENDENT OF WATER TABLE Y
 #parameter definitions using Laio et al 2009 (L09), Tamea et al. 2010 (T10), Tamea et al. 2009 (T09)
 #field capacity soil moisture, L09(2)
-def Y_ind(site_loc='S2_bog'):
-    sv = substrate_dict[site_loc]
-    T_p, k_s, m, n, psi_s, rd = sv['T_p'], sv['k_s'], sv['m'], sv['n'], sv['psi_s'], sv['rd']
-    
+def Y_ind(T_p, k_s, m, n, psi_s, rd):
     sfc = ((0.05*T_p)/k_s)**(m/(2+3*m)) #field capacity soil moisture, L09(2)
+    #print(sfc)
     B = 1/(1-2*m)*((1-sfc)/(1-sfc**(1/(2*m)))+2*m*sfc) #coeff for DWT, L09 under(30) - eq for specific yield 
     nu_star = T_p/(1+(0.35-0.65*n)*rd) #nu* the z-independent rate of cappillary flux, L09 before(21) - eq for yc
     psi_fc = psi_s*sfc**(-1/m) #soil matric potential at field capacity, L09 under(26) - eq for h 
-    
     #critical depth, L09(21)
     a_F = 1/(2+3*m)
     x1_F = (sfc)**(-(2+3*m)/m)
@@ -29,25 +25,19 @@ def Y_ind(site_loc='S2_bog'):
     F12 = scipy.special.hyp2f1(a_F, 1, 1+a_F, -(nu_star)/k_s*1)
     y_c = (psi_fc)*F11 - (psi_s)*F12
     return sfc, B, nu_star, psi_fc, y_c
-#Y_ind()
 
 #depth of seperation between saturated and unsaturated soil, L09(3)
-def Y_actual(y_tau, site_loc='S2_bog'):
-    psi_s = substrate_dict[site_loc]['psi_s']
+def Y_actual(y_tau, psi_s):
     y_actual = y_tau - psi_s
     return y_actual
 
 #h(y) and s(y)
-def h_and_s0(y, site_loc='S2_bog'):
+def h_and_s0(y, T_p, k_s, m, n, psi_s, rd):
     #non-y dependent variables
-    sfc, B, nu_star, psi_fc, y_c = Y_ind(site_loc=site_loc)
-    sv = substrate_dict[site_loc]
-    m,rd,psi_s = sv['m'],sv['rd'],sv['psi_s']
-
+    sfc, B, nu_star, psi_fc, y_c = Y_ind(T_p, k_s, m, n, psi_s, rd)
     #h(y)
     Atop = psi_fc - psi_s - y_c
     A = Atop/(Atop-5*rd)
-    
     if y >= y_c: #shallow conditions
         h_y = 0
         dh_dy = 0
@@ -57,7 +47,6 @@ def h_and_s0(y, site_loc='S2_bog'):
         elif (y < 0): #shallow NOT standing
             #soil moisture at the ground surface
             sy_z0 = (1+(sfc**(-1/(2*m))-1)*(y-0)/y_c)**(-2*m)
-            
     elif (y < y_c): #deep conditions - could be deep or very deep
         #soil moisture at the ground surface
         sy_z0 = (1+(sfc**(-1/(2*m))-1)*(y-0)/y_c)**(-2*m)
@@ -75,12 +64,9 @@ def h_and_s0(y, site_loc='S2_bog'):
             s_bar = 'None'
     return h_y, dh_dy, sy_z0, s_bar
 
-def soil_moisture(y,z,site_loc='S2_bog'):
-    sfc, B, nu_star, psi_fc, y_c = Y_ind(site_loc=site_loc)
-    h,t1,t2,t3 = h_and_s0(y, site_loc=site_loc)
-    sv = substrate_dict[site_loc]
-    T_p, k_s, m, n, psi_s, rd = sv['T_p'], sv['k_s'], sv['m'], sv['n'], sv['psi_s'], sv['rd']
-    
+def soil_moisture(y,z,T_p, k_s, m, n, psi_s, rd):
+    sfc, B, nu_star, psi_fc, y_c = Y_ind(T_p, k_s, m, n, psi_s, rd)
+    h,t1,t2,t3 = h_and_s0(y, T_p, k_s, m, n, psi_s, rd)
     if z>=0: #not in soil!
         s = None
     elif z<0 and z>=h: #low moisture zone
@@ -90,13 +76,9 @@ def soil_moisture(y,z,site_loc='S2_bog'):
     else: #below the water table
         s = 1
     return s
-#soil_moisture(1,2)
 
 #defining rain series function based on lamda alpha parameters
-def Rain_events(site_loc='S2_bog', N=1000, dt=0.1):
-    sv = substrate_dict[site_loc]
-    lam,alpha,interception = sv['lam'],sv['alpha'],sv['interception']
-    
+def Rain_events(lam, alpha, N, dt, interception = 0):
     lam_0 = lam - interception
     depths = np.random.exponential(1/alpha, N)
     event_markers = np.random.random(N)
@@ -106,15 +88,10 @@ def Rain_events(site_loc='S2_bog', N=1000, dt=0.1):
     return rain_series
 
 ##PARAMETERS DEPENDENT ON Y
-def simulation_paramters(y,site_loc='S2_bog',return_special=None):
-    
+def simulation_paramters(y, T_p, k_s, m, n, psi_s, rd, k1, k12, y_0, alpha, lam, interception=0, return_special=None):
     #non-y dependent variables
-    sfc, B, nu_star, psi_fc, y_c = Y_ind(site_loc=site_loc)
-    sv = substrate_dict[site_loc]
-    T_p, k_s, m, n, psi_s, rd = sv['T_p'], sv['k_s'], sv['m'], sv['n'], sv['psi_s'], sv['rd']
-    m,rd,psi_s = sv['m'],sv['rd'],sv['psi_s']
-    k1,k12,y_0 = sv['k1'],sv['k12'],sv['y_0']
-    
+    sfc, B, nu_star, psi_fc, y_c = Y_ind(T_p, k_s, m, n, psi_s, rd)
+    lam0 = lam - interception
     #h(y)
     Atop = psi_fc - psi_s - y_c
     A = Atop/(Atop-5*rd)
@@ -167,8 +144,11 @@ def simulation_paramters(y,site_loc='S2_bog',return_special=None):
 
 #finding the lower limit of y
 #this is when ET = lateral flow
-def lowerlim(starting_value=0.1, site_loc='S2_bog'):#T_p, k_s, m, n, psi_s, rd, k1, k12, y_0, alpha, lam, interception=0):
-    y_lower_limit = scipy.optimize.fsolve(simulation_paramters, starting_value, args=(site_loc, 'f-ET',))
+def lowerlim(starting_value, T_p, k_s, m, n, psi_s, rd, k1, k12, y_0, alpha, lam, interception=0):
+    sfc, B, nu_star, psi_fc, y_c = Y_ind(T_p, k_s, m, n, psi_s, rd)
+    #start_eval = -5*rd+psi_fc-psi_s+1
+    #start_eval = 50
+    y_lower_limit = scipy.optimize.fsolve(simulation_paramters, starting_value, args=(T_p, k_s, m, n, psi_s, rd, k1, k12, y_0, alpha, lam, interception, 'f-ET',))
     return y_lower_limit
 
 #ANALYTICAL SOLUTIONS EQUATIONS

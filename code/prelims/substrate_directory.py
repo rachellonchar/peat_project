@@ -10,6 +10,8 @@ import xlwt
 import xlrd
 
 #DEFINITION OF SUBSTRATE TYPES
+
+#S2 Bog Rainfall:
 #The mean depth when days with 0 cm of inundation are NOT counted is:
 mean_depth = 0.5595273264401741
 #The mean interarrival time is:
@@ -29,6 +31,9 @@ substrate_dict = {'laio_loamy_sand':{'alpha':2, 'lam':.3, 'interception':0, 'T_p
     'k1':.001, 'k12':.003, 'y_0':-20, 'psi_s':-10,
     'k_s':10, 'n':.5, 'm':.2},#(3) everglades 3 in tamea
                 'S2_bog':{'alpha':mean_depth, 'lam':(1/mean_interarrival_time), 'interception':0, 'T_p':0.5, 'rd':10,
+    'k1':.001, 'k12':.003, 'y_0':-20, 'psi_s':-10,
+    'k_s':10, 'n':.5, 'm':.2}#(4) paramters from s2 bog
+                'BLF_bog':{'alpha':mean_depth, 'lam':(1/mean_interarrival_time), 'interception':0, 'T_p':0.5, 'rd':10,
     'k1':.001, 'k12':.003, 'y_0':-20, 'psi_s':-10,
     'k_s':10, 'n':.5, 'm':.2}#(4) paramters from s2 bog
                   }
