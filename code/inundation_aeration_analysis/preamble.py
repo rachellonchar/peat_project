@@ -23,7 +23,7 @@ def updater(*params,normalized_to_all_years='no',stats='no'):
 #plt.plot([wt/100 for wt in variables['WT']])
 #plt.show()
 
-plt.plot(variables['WT'],'b')
-plt.title('water table, BLF 2015-18 data')
-plt.ylabel('water table (m)')
-plt.show()
+#plt.plot(variables['WT'],'b')
+#plt.title('water table, BLF 2015-18 data')
+#plt.ylabel('water table (m)')
+#plt.show()

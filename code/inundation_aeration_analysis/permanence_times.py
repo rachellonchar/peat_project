@@ -92,8 +92,9 @@ def perm_fit_exp(threshold_array=[9.3],name_fig='permanence_times',
     else:
         plt.savefig(gn(name_fig+'9.3_'+str(num_bars)+'bars',name_fig_dirc))
 
-for nn in [3,4,5,7]:
-    perm_fit_exp(threshold_array=[9.3],num_bars=nn,save_or_show='save')
+#for nn in [3,4,5,7]:
+    #perm_fit_exp(threshold_array=[9.3],num_bars=nn,save_or_show='save')
+perm_fit_exp(threshold_array=[9.3],num_bars=3,save_or_show='show')
     
 
 
