@@ -148,7 +148,7 @@ main_dirc = cwd.split('code', 1)[0]
 sys.path.insert(0, main_dirc+'code')
 
 #easy picture namer
-def gn(pic_name='temporary',sub_dirc=None,redirect=None):
+def gn(pic_name='temporary',sub_dirc=None,redirect=None,f='.pdf'):
     cwd = os.getcwd()
     mainD = cwd.split('code', 1)[0]
     if sub_dirc!=None:# and redirect!=None:
@@ -162,7 +162,7 @@ def gn(pic_name='temporary',sub_dirc=None,redirect=None):
         #mainP = mainD if type(redirect)==type(None) else redirect
         #fol = '' if type(sub_dirc)==type(None) else sub_dirc
         #main_folder = mainP+'/g/'+fol
-    return main_folder+urlify(pic_name)
+    return main_folder+urlify(pic_name)+f
 
 import pickle
 def save_obj(obj, name,parent_folder=None):

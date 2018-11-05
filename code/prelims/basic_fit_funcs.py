@@ -1,0 +1,332 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import sys    
+import os
+import xlwt
+import xlrd
+import pandas as pd
+import sklearn.linear_model
+regr = sklearn.linear_model.LinearRegression()
+from scipy.optimize import curve_fit
+import operator
+
+#-------------------------------------------------------------------------
+#MODEL FUNCTIONS:
+def avg_of_funcs(x,funcs):
+    return sum([fun(x) for fun in funcs])/len(funcs)
+
+#exponential and logistic
+def func_exp(x,a,b):
+    return a * np.exp(b * x) 
+def func_logistic(x,c,a,b,d):
+    return c/(1+a*np.exp(b*x)) + d
+
+import numpy, scipy.optimize
+#polynomial approximations
+def func_poly(x, *args):
+    n, poly = 0,0
+    for a in args:
+        poly += a*(x**n)
+        n += 1
+    return poly
+def func_linear(x,a0,a1):
+    return func_poly(x,a0,a1)
+def func_poly2(x,a0,a1,a2):
+    return func_poly(x,a0,a1,a2)
+def func_poly3(x,a0,a1,a2,a3):
+    return func_poly(x,a0,a1,a2,a3)
+
+def func_poly2_EX(x_fix):
+    def funn(x,a,c): return a+c*(-2*x_fix*x + x**2)
+    return funn
+
+def func_poly2_fixed_endpoints(xy1,xy2):
+    x1,y1 = xy1[0],xy1[1]
+    x2,y2 = xy2[0],xy2[1]
+    def polyA(x,a):
+        b = (y1-a*x1**2-y2+a*x2**2)/(x1-x2)
+        c = y1-a*x1**2-b*x1
+        return c+b*x+a**2
+    return polyA
+
+#-----------------------------------------------------------------------------
+#PLOTTING FUNCTIONS
+def model_type(funct):
+    classA = [func_linear, func_poly,func_poly2,func_poly3]
+    if funct in classA:
+        return 'poly'
+    else:
+        return funct
+
+def pre_plot(tupl,fit_type='poly',x_fix=None):#,y_axis=None):
+    if fit_type=='poly':
+        strg = 'f(x) = %5.3f + %5.3fx'
+        for i in range(2, len(tupl)):
+            strg += '\n+%5.5fx^'+str(i)
+        return strg % tuple(tupl)
+    #elif fit_type=='linear'
+    elif fit_type==func_exp:
+        return 'f(x) = %5.3fexp(%5.3fx)' % tuple(tupl)
+    elif fit_type==func_logistic:
+        return ' %5.3f/{1 + %5.3fexp(-%5.3fx)}+%5.3f' % tuple(tupl)
+    else:
+        if x_fix==None:
+            x_fix = 'xEX'
+        p1 = 'f(x) = %5.3f + \n%5.5f(-2(' % tuple(tupl)
+        return p1 + str(x_fix)+')x + x^2'
+
+def mult_masks(*masks):
+    #inc_mask = np.zeros_like(masks[0])
+
+    inc_mask = None
+    for mask in masks:
+        if type(mask)!=None:
+            inc_mask = np.zeros(len(mask))
+    if type(inc_mask)==type(None):
+        None
+    else:
+        for mask in masks:
+            for idx in range(0,len(inc_mask)):
+                if mask[idx]==1:
+                    inc_mask[idx] = 1
+    #print(inc_mask)
+    return inc_mask
+
+def series_cleanup(X_series,Y_series,mask=None):
+    indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
+    X = [X_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+    Y = [Y_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+    #print(mask)
+    if type(mask)!=type(None):
+        mas = [mask[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+        Xm = np.ma.masked_array(X,mask=mas)
+        Ym = np.ma.masked_array(Y,mask=mas)
+        X,Y = Xm.compressed(), Ym.compressed()
+    return X,Y
+
+def lin_fit(X_series,Y_series, mask=None,type_return='slope'):
+
+    X,Y = series_cleanup(X_series,Y_series,mask=mask)
+    if type(mask)!=type(None):
+        mas = [mask[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+        Xm = np.ma.masked_array(X,mask=mas)
+        Ym = np.ma.masked_array(Y,mask=mas)
+        X,Y = Xm.compressed(), Ym.compressed()
+    #print(X,Y)
+    slope, intercept, rvalue, pvalue, stderr = linregress(X,Y)
+    if type_return=='slope':
+        return slope
+    elif type_return=='function':
+        def newf(x): return intercept+slope*x
+        return newf
+    elif type_return=='function and print':
+        def newf(x): return intercept+slope*x
+        printf = pre_plot(tuple([intercept,slope]))
+        return newf, printf
+
+def fit_2sets(X_series,Y_series, fit_func=func_linear, mask=None,clipped=0):
+    
+    X,Y = series_cleanup(X_series,Y_series,mask=mask)
+    popt, pcov = curve_fit(fit_func, X, Y)#,sigma=sigma)
+    def newf(x): return fit_func(x,*popt)
+    labe = pre_plot(tuple(popt),model_type(fit_func))
+    dic1={}
+    dic1.update({'function':newf})
+    dic1.update({'parameters':popt})
+    dic1.update({'print function':labe})
+    if clipped==1:
+        dic1.update({'X':X})
+        dic1.update({'Y':Y})
+        dic1.update({'Yexp':[newf(xx) for xx in X]})
+    else:
+        dic1.update({'X':X_series})
+        dic1.update({'Y':Y_series})
+        dic1.update({'Yexp':[newf(xx) for xx in X_series]})
+    return dic1
+
+def array_span(Xob, function,pts=30):
+    #pts = len(Xob) if specify_points==0 else specify_points
+    x0,xN = min(Xob),max(Xob)
+    Xspan = np.linspace(x0,xN,pts)
+    Yexp = [function(x) for x in Xspan]
+    return Xspan, Yexp
+
+def expected_Y(X,Y,fit_type=func_linear,mask=None,clipped=0):
+    
+    fic = fit_2sets(X,Y, fit_func=fit_type, mask=mask,clipped=clipped)
+    dicT = fic
+    if fit_type == func_exp:
+        popt = fic['parameters']
+        lin_labe = pre_plot(popt) #default model is polynomial
+        def lin_fun(xx): return np.log(popt[0])+popt[1]*xx
+        lin_popt = tuple((np.log(popt[0]),popt[1]))
+        dicT.update({'log function':lin_fun})
+        dicT.update({'print log function':lin_labe})
+        dicT.update({'log parameters':lin_popt})
+        Yln_exp = [lin_fun(xx) for xx in fic['X']]
+        dicT.update({'log Yexp':Yln_exp})
+        
+        Xsp,log_Ysp = array_span(dicT['X'],dicT['log function'])
+        dicT.update({'log Ysexp':log_Ysp})
+        lnY = [np.log(y) for y in dicT['Y']]
+        dicT.update({'log Y':lnY})
+    Xsp,Ysp = array_span(dicT['X'],dicT['function'])
+    dicT.update({'Xs':Xsp})
+    dicT.update({'Ysexp':Ysp})
+    return dicT
+
+def mask_array(array,mask):
+    array1 = np.ma.masked_array(array,mask=mask)
+    return array1.compressed()
+ 
+def deviations_from_fit(X,Y,fit_type=func_linear,mask=None,clipped=0,clipped_devs=0):
+    fit_dic = expected_Y(X=X,Y=Y,fit_type=fit_type,mask=mask,clipped=clipped)
+    if fit_type==func_exp:
+        Y, lnYex = fit_dic['Y'],fit_dic['log Yexp']
+        dev = [Y[ii] - np.exp(lnYex[ii]) for ii in range(0,len(Y))]
+    else:
+        Y, Yex = fit_dic['Y'],fit_dic['Yexp']
+        dev = [Y[ii] - Yex[ii] for ii in range(0,len(Y))]
+        
+    if clipped_devs==1 and clipped==1:
+        devs = mask_array(dev,mask)
+    else:
+        devs = dev
+    fit_dic.update({'deviations':devs})
+    return fit_dic
+
+import scipy
+from scipy.stats import chisquare, linregress
+#def include_chi2(X_series,Y_series, fit_func=func_linear, mask=None):
+    #dic1 = fit_2sets(X_series,Y_series, fit_func=fit_func, mask=mask)
+    #print(linregress(X_series,Y_series))
+    #popt = dic1['parameters']
+    #def fun_test(xx): return popt[0]+1*popt[1]*xx
+    #Y_exp = [fun_test(xx) for xx in X_series]
+    #Yscip_exp = scipy.array(Y_exp)
+    #X_ob,Y_ob = scipy.array(X_series), scipy.array(Y_series)
+    #chi2 = 0
+    #for ii in range(0,len(Y_exp)):
+        #chi2 += ((Y_series[ii]-Y_exp[ii])**2)/Y_exp[ii]
+    #print(chi2)
+    #print(chisquare(Y_ob, f_exp=Yscip_exp))
+
+#def r_squared(X,Y):
+    #linregress(X,Y)
+
+def distance_2pts(p1,p2):
+    x1,y1 = p1[0],p1[1]
+    x2,y2 = p2[0],p2[1]
+    D2 = (x2-x1)**2 + (y2-y1)**2
+    D = D2**(1/2)
+    return D
+#print(distance_2pts([0,0],[1,3]))
+def line_2pts(p1,p2):
+    x1,y1 = p1[0],p1[1]
+    x2,y2 = p2[0],p2[1]
+    m = (y2-y1)/(x2-x1)
+    b = y1 - m*x1
+    return m,b
+def line_mpt(m,pt):
+    x1,y1 = pt[0],pt[1]
+    b = y1 - m*x1
+    return m,b
+
+import math
+def plot_mxb(*m_b_pairs,xwindow=[0,10]):
+    xar = np.linspace(xwindow[0],xwindow[1],20)
+    ct = 0
+    #phis = []
+    for mb in m_b_pairs:
+        if type(mb[0])!=type([]) and type(mb[1])!=type([]):
+            m,b = mb[0],mb[1]
+        else:
+            if type(mb[0])!=type([]):
+                m,b = line_mpt(mb[0],mb[1])
+            else:
+                m,b = line_2pts(mb[0],mb[1])
+        yar = [m*x+b for x in xar]
+        plt.plot(xar,yar,label='line '+str(ct+1))
+        phi0 = math.degrees(math.atan(m))
+        phi = phi0 if phi0>=0 else 360+phi0
+        #print(phi)
+        if ct>0:
+            #print('angles between line '+str(ct)+' and line '+str(ct+1)+':')
+            tot_ang = abs(phi-phi_prev)
+            ang1 = tot_ang if tot_ang<=180 else tot_ang-180
+            ang2 = 180-ang1
+            #print(ang1,ang2)
+            #print(' ')
+        phi_prev = phi
+        ct += 1
+    plt.xlim(xmin=xwindow[0],xmax=xwindow[1])
+    plt.ylim(ymin=xwindow[0],ymax=xwindow[1])
+    plt.legend()
+    plt.show()
+        
+#plot_mxb([3,5],[-1/3,4])
+            
+
+def fit_stats(X_series,Y_series, fit_func=func_linear, mask=None):
+    X,Y = X_series,Y_series
+    dic1 = fit_2sets(X,Y, fit_func=fit_func, mask=mask)
+    #print(dic1['parameters'])
+    if type(mask)!=type(None):
+        Xm = np.ma.masked_array(X,mask=mask)
+        Ym = np.ma.masked_array(Y,mask=mask)
+        X,Y = Xm.compressed(), Ym.compressed()
+    Yexp = [dic1['function'](xx) for xx in X]
+    residuals = [Y[i]-Yexp[i] for i in range(0,len(X))]
+    ybar = sum(Y)/len(Y)
+    R2_n = [(Yexp[i]-ybar)**2 for i in range(0,len(X))]
+    R2_d = [(Y[i]-ybar)**2 for i in range(0,len(X))]
+    R2 = sum(R2_n)/sum(R2_d)
+    #print(R2)
+
+#observed_values=scipy.array([18,21,16,7,15])
+#expected_values=scipy.array([22,19,44,8,16])
+
+#scipy.stats.chisquare(observed_values, f_exp=expected_values)
+
+        
+
+#m = [1,0,0,1,1,1,0,0,1,1,0]
+#x = [1,2,5,8,10,2,3,4,4,5,3]
+#y = [3,4,-1,9,0,1,1,2,3,4,5]
+
+#m = [0,0,0,0]
+#x = [1,2,3,4]
+#y = [1,2,3,7]
+#lin_fit(x,y)
+
+#fit_stats(x,y,fit_func=func_exp)
+#print(sum(x)/4,sum(y)/4)
+
+# with mask m
+#dicc = fit_2sets(x,y,fit_func=func_linear,mask=m)
+#fun = dicc['function']
+#xs, yexp = array_span(x,fun,specify_points=20)
+#Xm = np.ma.masked_array(x,mask=m)
+#Ym = np.ma.masked_array(y,mask=m)
+#plt.plot(Xm,Ym,'bo')
+#plt.plot(xs,yexp,'r',label=dicc['print function'])
+#plt.show()
+
+## with mask of all 1's (no values masked)
+#dicc = fit_2sets(x,y,fit_func=func_linear,mask=[0,0,0,0,0,0,0,0,0,0,0])
+#fun = dicc['function']
+#Xm = np.ma.masked_array(x,mask=[0,0,0,0,0,0,0,0,0,0,0])
+#Ym = np.ma.masked_array(y,mask=[0,0,0,0,0,0,0,0,0,0,0])
+#xs, yexp = array_span(x,fun,specify_points=20)
+#plt.plot(Xm,Ym,'g.')
+#plt.plot(xs,yexp,'y--',label=dicc['print function'])
+
+## with mask=None
+#dicc = fit_2sets(x,y,fit_func=func_linear)
+#fun = dicc['function']
+#xs, yexp = array_span(x,fun,specify_points=20)
+#plt.plot(x,y,'g.')
+#plt.plot(xs,yexp,'y.',label=dicc['print function'])
+##plot_fit(x,y,func_linear)
+#plt.legend()
+#plt.show()

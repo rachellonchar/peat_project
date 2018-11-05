@@ -12,7 +12,7 @@ sys.path.insert(0, cwd_code+'/stochastic_modeling')
 
 
 ##-----------------------------------------------------------------------
-variables0,naming0 = load_obj('basic_parameters'),load_obj('basic_naming')
+variables0,naming0 = load_obj('new_parameters'),load_obj('new_naming')#load_obj('basic_parameters'),load_obj('basic_naming')
 all_years = naming0['years']
 from analysis_funcs_newdat import dict_call
 #def updater(*params,normalized_to_all_years='no',stats='no'):
@@ -22,7 +22,8 @@ from analysis_funcs_newdat import dict_call
 #-----------------------------------------------------------------------
 
 #fix dictionaries to match that of new data objs:
-yrs = load_obj('years')
+#yrs = load_obj('years')
+yrs=[2015,2016,2017,2018]
 naming = {}
 for key, value in naming0.items():
     if key in ['units','calls','years']:

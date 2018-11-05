@@ -7,7 +7,7 @@ sys.path.insert(0, cwd_code+'/prelims')
 from save_funcs import *
 #-------------------------------------------
 
-from preamble import *
+from preamble0 import *
 import imageio
 
 v,n = variables,naming

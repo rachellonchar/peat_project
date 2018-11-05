@@ -75,12 +75,11 @@ def pre_plot(tupl,fit_type='poly',x_fix=None):#,y_axis=None):
         p1 = 'f(x) = %5.3f + \n%5.5f(-2(' % tuple(tupl)
         return p1 + str(x_fix)+')x + x^2'
 
-def fit_2sets(X_series,Y_series, fit_func=func_linear, mask=None):
-    
-    #indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
+def series_cleanup(X_series,Y_series,mask=None):
+    indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
     #X,Y = X_series[indices], Y_series[indices]
     #X,Y = X_series, Y_series
-    indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
+    #indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
     X = [X_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
     Y = [Y_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
     if type(mask)!=type(None):
@@ -88,6 +87,37 @@ def fit_2sets(X_series,Y_series, fit_func=func_linear, mask=None):
         Xm = np.ma.masked_array(X,mask=mas)
         Ym = np.ma.masked_array(Y,mask=mas)
         X,Y = Xm.compressed(), Ym.compressed()
+    return X,Y
+    ##indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
+    #cleane,mark_for_removal=[],[]
+    #for arr in X_series:
+        ##eliminate nan values  -------------------------------------
+        #marked_indices = [idx for idx in range(0, len(arr)) if (np.logical_not(np.isnan(arr[idx]))==False)]#.all()]
+        #mark_for_removal = np.append(mark_for_removal,marked_indices)
+        ##-----------------------------------------------------------
+    #for arr in X_series:
+        #nonan = [arr[idx] for idx in range(0, len(arr)) if idx not in mark_for_removal]
+        #if type(mask)!=type(None):
+            #mas = [mask[idx] for idx in range(0,len(arr)) if idx not in mark_for_removal]#indices[idx]==True ]
+            #cleane.append(np.ma.masked_array(nonan,mask=mas).compressed())
+        #else:
+            #cleane.append(nonan)
+    #return tuple(cleane)
+
+def fit_2sets(X_series,Y_series, fit_func=func_linear, mask=None):
+    
+    indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
+    #X,Y = X_series[indices], Y_series[indices]
+    #X,Y = X_series, Y_series
+    #indices = np.logical_not(np.logical_or(np.isnan(X_series), np.isnan(Y_series)))
+    X = [X_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+    Y = [Y_series[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+    if type(mask)!=type(None):
+        mas = [mask[idx] for idx in range(0,len(indices)) if indices[idx]==True ]
+        Xm = np.ma.masked_array(X,mask=mas)
+        Ym = np.ma.masked_array(Y,mask=mas)
+        X,Y = Xm.compressed(), Ym.compressed()
+    #X,Y = series_cleanup(X_series,Y_series,mask=mask)
     popt, pcov = curve_fit(fit_func, X, Y)#,sigma=sigma)
     def newf(x): return fit_func(x,*popt)
     labe = pre_plot(tuple(popt),model_type(fit_func))
@@ -96,6 +126,47 @@ def fit_2sets(X_series,Y_series, fit_func=func_linear, mask=None):
     dic1.update({'parameters':popt})
     dic1.update({'print function':labe})
     return dic1
+
+def deviations(X_series,Y_series,fit_type=func_linear,mask=None):
+    dicf = fit_2sets(X_series,Y_series,fit_func=fit_type,mask=mask)
+    fun = dicf['function']
+    X,Y = series_cleanup(X_series,Y_series,mask=mask)
+    ##Yexp = [f(x) for x in X]
+    #if fit_func==func_exp:
+        #a,b = dicf['parameters']
+        #def lny(x): return np.log(a)+b*x
+        #LnY = [np.log(y) for y in Y]
+        #LnYexp = [lny(x) for x in X]
+        #devs = [np.exp(LnY[idx]-LnYexp[idx]) for idx in range(0,len(Y))]
+        #def idi(p): return p if p!=0 else 1
+        #mask_inf = [idi(dd) for dd in devs]
+        
+    #else:
+        #Yexp = [f(x) for x in X]
+        #devs = [Y[idx]-Yexp[idx] for idx in range(0,len(Y))]
+    #return devs,mask_inf#X,Y,Yexp, devs
+    ##fit_dic, new_mask,outs_removed = general_fit_pre(X=X,Y=Y,fit_type=fit_type,mask=None)
+    ##fun = fit_dic['function']
+    exp = [fun(X[ii]) for ii in range(0,len(X))]
+    if fit_type!=func_exp:
+        dev = [Y[ii]-exp[ii] for ii in range(0,len(X))]
+    else:
+        dev = [np.exp(np.log(Y[ii])-exp[ii]) for ii in range(0,len(X))]
+        #dev = [np.exp(np.log(v[Y][ii])-exp[ii]) for ii in range(0,len(v[X]))]
+        def idi(p): return p if p!=0 else 1
+        mask_inf = [idi(dd) for dd in dev]
+    return dev,mask_inf
+    #if fit_type!=btf.func_exp:
+        #res_squared = [abs(Csil[ii]-exp[ii]) for ii in range(0,len(Tsil))]
+    #else:
+        #res_squared = [abs(np.log(Csil[ii])-exp[ii]) for ii in range(0,len(Tsil))]
+def mult_masks(*masks):
+    inc_mask = np.zeros_like(masks[0])
+    for mask in masks:
+        for idx in range(0,len(inc_mask)):
+            if mask[idx]==1:
+                inc_mask[idx] = 1
+    return inc_mask
 
 def lin_fit(X_series,Y_series, mask=None,type_return='slope'):
     

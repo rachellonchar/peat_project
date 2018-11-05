@@ -12,7 +12,9 @@
 #from substrate_directory import *
 
 #from preamble import *
-from inundation_aeration_period_definitions import *
+#from inundation_aeration_period_definitions import *
+#from inundation_aeration_defs_yr import *
+from preamble import *
 
 #def per(Xvar,threshold):
     #if Xvar=='period of aeration':
@@ -27,17 +29,18 @@ from inundation_aeration_period_definitions import *
         #ro = 'deviations of ' +ro
     #return ro
     
-
-def slope_at_thresholds(thresholds_array=[-5,10,14.1,25],Xvar='period of aeration',Yvar='CH4_S1',color='NTs10',col_map='coolwarm',
-    deviations_predictor='NTs10',dev_fit_type=btf.func_exp,mask_events='inundated',show_masked_pts=0,
-    pic_name=None, pic_folder_name='net_inundation_aeration_periods',save_or_show='show',cwd=cwd,deviations_applied_to='y'):
+#variables0,naming0 = load_obj('new_parameters'),load_obj('new_naming')
+def x_mult(*X,Y,
+    #thresholds_array=[-5,10,14.1,25],Xvar='period of aeration',Yvar='CH4',color='NTs10',col_map='coolwarm',
+    #deviations_predictor='NTs10',dev_fit_type=btf.func_exp,mask_events='inundated',show_masked_pts=0,
+    #pic_name=None, pic_folder_name='net_inundation_aeration_periods',save_or_show='show')#,cwd=cwd,deviations_applied_to='y'):
         
-    if Xvar=='period of aeration' or Yvar=='period of aeration':
-        mask_events = 'inundated'
-    if Xvar=='period of inundation' or Yvar=='period of inundation':
-        mask_events = 'aerated'
-    #thresholds_array = np.append(max(v['WT'])+1,thresholds_array) if mask_events=='inundated' else np.append(min(v['WT'])-1,thresholds_array)
-    t_e = 'aerated' if mask_events=='inundated' else 'inundated'
+    #if Xvar=='period of aeration' or Yvar=='period of aeration':
+        #mask_events = 'inundated'
+    #if Xvar=='period of inundation' or Yvar=='period of inundation':
+        #mask_events = 'aerated'
+    ##thresholds_array = np.append(max(v['WT'])+1,thresholds_array) if mask_events=='inundated' else np.append(min(v['WT'])-1,thresholds_array)
+    #t_e = 'aerated' if mask_events=='inundated' else 'inundated'
     num_plots=len(thresholds_array)
     cols = math.floor(np.sqrt(num_plots))
     rows = math.ceil(num_plots/cols)
@@ -115,7 +118,7 @@ def slope_at_thresholds(thresholds_array=[-5,10,14.1,25],Xvar='period of aeratio
         bill = [mapper.to_rgba(val) for val in col_msk.compressed()]
         plt.scatter(Xmsk.compressed(),Ymsk.compressed(),s=30,c=bill,cmap=mapper,
             edgecolor=bill,vmin=minD,vmax=maxD,label='all '+t_e+' events')
-        plt.legend(loc=4,ncol=1, fancybox=True,prop={'size':8})
+        plt.legend(loc=2,ncol=1, fancybox=True,prop={'size':5})
         #if ct>1:
         plt.title('threshold='+str(threshold))
         if type(Xvar)==str and (Xvar=='WT' or Xvar=='NWT'):
@@ -139,26 +142,32 @@ def slope_at_thresholds(thresholds_array=[-5,10,14.1,25],Xvar='period of aeratio
     plt.suptitle('Sensitivity at different threshold definitions \n(to define '+t_e+' events)',fontsize=16,fontdict=font)
     plt.tight_layout()
     plt.subplots_adjust(top=0.9,bottom=.1,left=.13)
-    if pic_name==None:
-        if save_or_show=='save':
+    #if pic_name==None:
+        #if save_or_show=='save':
             
-            plt.savefig(gn(), bbox_inches='tight')
-            plt.close(fig)
-        else:
-            plt.show()
-    else:
-        #pnam = pic_namer(pic_name, pic_folder_name)
-        plt.savefig(gn(pic_name,pic_folder_name), bbox_inches='tight')
+            #plt.savefig(gn(), bbox_inches='tight')
+            #plt.close(fig)
+        #else:
+            #plt.show()
+    #else:
+        ##pnam = pic_namer(pic_name, pic_folder_name)
+        #plt.savefig(gn(pic_name,pic_folder_name), bbox_inches='tight')
 
 xx='WT'
-yy='NCH4_S2'
+yy='NCH4'
 #yy='NCH4'
-co='Ts10'
+co='NTs10'
 
-slope_at_thresholds(thresholds_array=[27,9.3],Xvar=xx,Yvar=yy,color=co,
-    deviations_applied_to='y',mask_events='inundated',pic_name='A2l',save_or_show='show')#,col_map='Blues')
-slope_at_thresholds(thresholds_array=[-9,9.3],Xvar=xx,Yvar=yy,color=co,
-    deviations_applied_to='y',mask_events='aerated',pic_name='I2l',save_or_show='show')#,col_map='Blues')
+#slope_at_thresholds(thresholds_array=[78,1.08],Xvar=xx,Yvar=yy,color=co,
+    #deviations_applied_to='y',mask_events='inundated')#,pic_name='A2l',save_or_show='show')#,col_map='Blues')
+#slope_at_thresholds(thresholds_array=[-58,1.08],Xvar=xx,Yvar=yy,color=co,
+    #deviations_applied_to='y',mask_events='aerated')#,pic_name='I2l',save_or_show='show')#,col_map='Blues')
+#plt.show()
+
+slope_at_thresholds(thresholds_array=[78,1.08],Xvar=xx,Yvar=yy,color=co,
+    deviations_predictor=None,mask_events='inundated')#,pic_name='A2l',save_or_show='show')#,col_map='Blues')
+slope_at_thresholds(thresholds_array=[-58,1.08],Xvar=xx,Yvar=yy,color=co,
+    deviations_predictor=None,mask_events='aerated')#,pic_name='I2l',save_or_show='show')#,col_map='Blues')
 plt.show()
 
         
